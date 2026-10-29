@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" data-palette="azure">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpsPilot for Microsoft Teams — Incident Operations</title>
+  <link rel="stylesheet" href="OpsPilot.css" />
+</head>
+
+<body>
+  <button class="back-btn" id="switchWorkspaceTop" type="button" title="Back to workspace selection">← Back</button>
+  <section id="roleGate" class="role-gate" aria-label="Choose workspace">
+    <div class="gate-visual">
+      <div class="gate-brand">
+        <div class="gate-brand-mark">O</div>
+        <div>
+          <div class="gate-brand-name">OpsPilot</div>
+          <div class="gate-brand-sub">SRE + ITSM · Teams workflow</div>
+        </div>
+      </div>
+      <div class="gate-visual-copy">
+        <div class="gate-kicker">DESIGNED FOR MICROSOFT TEAMS</div>
+        <h2>Your incident workflow,<br><em>right beside Teams.</em></h2>
+        <p>Track incident ownership, updates, meetings, and follow-ups in one focused workspace.</p>
+      </div>
+    </div>
+    <div class="gate-main">
+      <div class="gate-topbar">
+        <button class="theme-toggle" id="themeToggleGate" type="button"><span class="theme-swatch"
+            id="themeIconGate">☾</span><span id="themeLabelGate">Dark theme</span></button>
+      </div>
+      <div class="gate-main-inner">
+        <div class="gate-main-head">
+          <div class="gate-step">WORKSPACE ENTRY &nbsp; / &nbsp; 01</div>
+          <h1>Where are you <span>working today?</span></h1>
+          <p>Choose a workspace to continue. The tools and controls you'll see depend on your role.</p>
+        </div>
+        <div class="role-cards">
+          <button class="role-card user-role" type="button" onclick="enterWorkspace('user')"
+            aria-label="Enter user workspace">
+            <span class="role-symbol"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="10" cy="8" r="3" stroke="currentColor" stroke-width="1.7" />
+                <path d="M3.5 19c.6-3.2 2.8-4.8 6.5-4.8 2 0 3.6.5 4.7 1.6M17 14.5v6M14 17.5h6" stroke="currentColor"
+                  stroke-width="1.7" stroke-linecap="round" />
+              </svg></span>
+            <span class="role-title">User workspace</span><span class="role-desc">Find incident threads, follow updates,
+              check ownership, and jump back into the conversation in Teams.</span><span class="role-enter"><span>Open
+                incident console</span><span class="arrow">↗</span></span>
+          </button>
+          <button class="role-card admin-role" type="button" onclick="enterWorkspace('admin')"
+            aria-label="Enter administrator workspace">
+            <span class="role-symbol"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 3.2 19 6v5.1c0 4.7-2.9 7.9-7 9.7-4.1-1.8-7-5-7-9.7V6l7-2.8Z" stroke="currentColor"
+                  stroke-width="1.7" stroke-linejoin="round" />
+                <path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg></span>
+            <span class="role-title">Admin workspace</span><span class="role-desc">Manage connected Teams groups,
+              monitoring scope, incident automation, paging, and Zoom permissions.</span><span
+              class="role-enter"><span>Open control room</span><span class="arrow">↗</span></span>
+          </button>
+        </div>
+        
+        <div class="gate-footer"><span><strong>OPSPILOT</strong> &nbsp; / &nbsp; INCIDENT OPERATIONS</span><span>DESIGN
+            PREVIEW &nbsp; · &nbsp; NO LIVE CONNECTION</span></div>
+      </div>
+    </div>
+  </section>
+  <div class="app">
+    
+    <main>
+      <header class="topbar">
+        <div>
+          <div class="crumb">Workspace / <b id="crumbName">Incident console</b></div>
+        </div>
+        <div class="top-right">
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle color theme"><span
+              class="theme-swatch" id="themeIcon">☾</span><span id="themeLabel">Dark theme</span></button><span
+            class="env">DEMO ENVIRONMENT</span>
+          <div class="avatar" id="topAvatar">U</div>
+          <div class="hide-mobile"><strong style="font-size:12px" id="topName">User preview</strong>
+            <div style="font-size:10px;color:var(--muted);margin-top:3px" id="topRoleName">User workspace</div>
+          </div>
+        </div>
+      </header>
+      <div class="content">
+        <div class="page-heading">
+          <div>
+            <div class="eyebrow">Incident operations</div>
+            <h1 id="pageTitle">Incident console</h1>
+            <p id="pageSubtitle">Search incidents and see which Teams channels are connected to OpsPilot.</p>
+          </div>
+          <div id="headingActions"></div>
+        </div>
+        <div id="userPanel" class="role-panel">
+          <div class="user-layout">
+            <div>
+              <div class="card">
+                <div class="card-pad toolbar-pad">
+                  <div class="toolbar">
+                    <label class="fpill search"><span class="pi">⌕</span><input id="query" placeholder="Search incidents…" aria-label="Search incidents" /></label>
+                    <label class="fpill" title="From date"><span class="pi">▦</span><span class="pl">From</span><input id="fromDate" type="date" aria-label="From date" /></label>
+                    <label class="fpill" title="To date"><span class="pi">▦</span><span class="pl">To</span><input id="toDate" type="date" aria-label="To date" /></label>
+                    <label class="fpill" title="Created by"><span class="pi">☺</span><select id="creatorFilter" aria-label="Created by">
+                        <option value="">All creators</option>
+                        <option>Priya Sharma</option>
+                        <option>Rahul Mehta</option>
+                        <option>Alex Chen</option>
+                        <option>Sam Wilson</option>
+                      </select></label>
+                    <label class="fpill" title="Team or channel"><span class="pi">#</span><select id="groupFilter" aria-label="Team or channel">
+                        <option value="">All teams &amp; channels</option>
+                        <optgroup label="Teams">
+                          <option value="team:Platform Engineering">Platform Engineering</option>
+                          <option value="team:Cloud Operations">Cloud Operations</option>
+                          <option value="team:Payments Services">Payments Services</option>
+                        </optgroup>
+                        <optgroup label="Channels">
+                          <option value="channel:prod-incidents"># prod-incidents</option>
+                          <option value="channel:service-health"># service-health</option>
+                          <option value="channel:release-watch"># release-watch</option>
+                          <option value="channel:cloud-alerts"># cloud-alerts</option>
+                          <option value="channel:infra-ops"># infra-ops</option>
+                          <option value="channel:payments-oncall"># payments-oncall</option>
+                          <option value="channel:payment-releases"># payment-releases</option>
+                        </optgroup>
+                      </select></label>
+                    <label class="fpill" title="Status"><span class="pi">◉</span><select id="statusFilter" aria-label="Status">
+                        <option value="">All statuses</option>
+                        <option value="Active">Active</option>
+                        <option value="Monitoring">Monitoring</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Waiting for IC">Waiting for IC</option>
+                      </select></label>
+                    <button class="fpill clear" id="clearFilters" type="button" title="Clear filters">✕ Clear</button>
+                  </div>
+                </div>
+                <div class="incident-results-head">
+                  <div>
+                    <div class="results-kicker">LIVE INCIDENT FEED <span class="results-pulse"></span></div>
+                    <h2>Channel incident board</h2>
+                    <p id="resultCount">Showing channels and their latest incidents</p>
+                  </div><button class="button small" id="refreshBtn">↻ Refresh feed</button>
+                </div>
+                <div id="incidentRows" class="incident-card-grid" aria-live="polite"></div>
+                <div id="emptyState" class="empty hidden">No incidents match these filters. Try a wider date range or
+                  clear your filters. <button class="link" type="button" onclick="document.getElementById('clearFilters').click()">Clear filters</button></div>
+              </div>
+              <div class="footnote">Each card represents one channel and surfaces its latest incident first, with
+                earlier incidents listed underneath. Sample records are illustrative; production records should come
+                from the authorized backend and link to the real Teams thread.</div>
+            </div>
+            <aside class="side-card group-channel-panel" aria-label="Teams groups and channel bot status">
+              <div class="side-card-head">
+                <div>
+                  <div class="directory-eyebrow">WORKSPACE DIRECTORY</div>
+                  <h3>Teams groups &amp; channels</h3>
+                  <p>See where OpsPilot is monitoring conversations.</p>
+                </div>
+                <span class="coverage-count" id="userMonitoredCount">6/7</span>
+              </div>
+              <div class="channel-legend"><span><i class="legend-dot added"></i>Added to bot</span><span><i
+                    class="legend-dot not-added"></i>Not added</span></div>
+              <div id="userGroupChannelList" class="user-group-channel-list"></div>
+              <div class="directory-footnote">Status reflects this prototype's monitoring configuration. Admins can
+                change channel coverage from Groups &amp; channels.</div>
+            </aside>
+          </div>
+        </div>
+        <div id="adminPanel" class="role-panel hidden">
+          <div class="notice"><strong>Admin controls:</strong> policies are configured independently for each channel.
+            Removing a channel stops bot monitoring for that channel; it does not delete the Teams channel.</div>
+          <div class="section-head">
+            <div>
+              <h2>Teams groups connected to OpsPilot</h2>
+              <p>Only groups where the bot is installed and has the required access should appear here.</p>
+            </div><button class="button primary" id="addChannelBtn">＋ Add channel</button>
+          </div>
+          <div class="group-grid" id="groupGrid"></div>
+          <div class="card" style="margin-top:22px">
+            <div class="card-pad">
+              <div class="section-head">
+                <div>
+                  <h2>Channel behavior policies</h2>
+                  <p>Set automation rules individually for each Teams channel.</p>
+                </div><button class="button primary" id="savePolicies">Save all policies</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="settings-table policy-table">
+                <thead>
+                  <tr>
+                    <th>Team / channel</th>
+                    <th>Open incidents</th>
+                    <th>Summary interval</th>
+                    <th>Allow paging</th>
+                    <th>Allow Zoom start</th>
+                    <th>Bot monitoring</th><th>Advanced</th>
+                  </tr>
+                </thead>
+                <tbody id="policyRows"></tbody>
+              </table>
+            </div>
+            <div class="card-pad">
+              <div class="footnote">Custom intervals are stored as minutes and should be validated server-side (for
+                example, 1–120 minutes). The open-incident count excludes resolved and closed incidents. Enforce paging
+                and meeting-creation permissions in the backend.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div id="modalRoot"></div>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="OpsPilot.js"></script>
+</body>
+
+</html>

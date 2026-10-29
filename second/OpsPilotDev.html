@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="midnight">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpsPilot — Incident Operations (Dev layout)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="OpsPilotDev.css" />
+</head>
+<body>
+  <button class="back-btn" id="switchWs" type="button" title="Back to workspace selection">← Back</button>
+  <!-- ROLE GATE -->
+  <section id="roleGate" class="gate">
+    <div class="gate-top">
+      <div class="logo-lockup"><span class="logo">◆</span><strong>OpsPilot</strong></div>
+      <button class="btn ghost" id="themeGate" type="button">◐ Theme</button>
+    </div>
+    <div class="gate-hero">
+      <span class="eyebrow">$ opspilot --workspace</span>
+      <h1>Ship incident response<br /><span class="grad">straight from Teams.</span></h1>
+      <p>Track ownership, updates, meetings and follow-ups in one focused workspace. Pick how you want to work today.</p>
+      <div class="gate-cards">
+        <button class="gate-card" type="button" onclick="enterWorkspace('user')">
+          <span class="gate-ico">⌕</span>
+          <h3>Continue as User</h3>
+          <p>Find incident threads, follow updates, check ownership and jump back into the Teams conversation.</p>
+          <span class="gate-go">Open incident console →</span>
+        </button>
+        <button class="gate-card" type="button" onclick="enterWorkspace('admin')">
+          <span class="gate-ico">⚙</span>
+          <h3>Continue as Admin</h3>
+          <p>Manage connected Teams groups, monitoring scope, automation, paging and Zoom permissions.</p>
+          <span class="gate-go">Open control room →</span>
+        </button>
+      </div>
+      <div class="gate-foot">Design preview · mock data · no live connection</div>
+    </div>
+  </section>
+
+  <!-- APP -->
+  <div id="app" class="app hidden">
+    <div class="top-right-bar">
+      <button class="btn ghost" id="themeBtn" type="button">◐ Midnight</button>
+      <div class="who-box"><div class="avatar" id="topAvatar">U</div><div><strong id="topName">User preview</strong><small id="topRole">Incident viewer</small></div></div>
+    </div>
+
+    <main class="wrap">
+      <!-- CONSOLE -->
+      <section id="page-console" class="page">
+        <div class="page-head"><div><h1>Incident console</h1><p>Find an incident, understand the latest state, and return to the source conversation.</p></div></div>
+        <div class="toolbar">
+          <label class="fpill search"><span class="pi">⌕</span><input id="query" placeholder="Search incidents…" aria-label="Search incidents" /></label>
+          <label class="fpill" title="From date"><span class="pi">▦</span><span class="pl">From</span><input id="fromDate" type="date" aria-label="From date" /></label>
+          <label class="fpill" title="To date"><span class="pi">▦</span><span class="pl">To</span><input id="toDate" type="date" aria-label="To date" /></label>
+          <label class="fpill" title="Created by"><span class="pi">☺</span>
+            <select id="creatorFilter" aria-label="Created by">
+              <option value="">All creators</option><option>Priya Sharma</option><option>Rahul Mehta</option><option>Alex Chen</option><option>Sam Wilson</option>
+            </select></label>
+          <label class="fpill" title="Team or channel"><span class="pi">#</span>
+            <select id="groupFilter" aria-label="Team or channel">
+                <option value="">All teams &amp; channels</option>
+                <optgroup label="Teams">
+                  <option value="team:Platform Engineering">Platform Engineering</option>
+                  <option value="team:Cloud Operations">Cloud Operations</option>
+                  <option value="team:Payments Services">Payments Services</option>
+                </optgroup>
+                <optgroup label="Channels">
+                  <option value="channel:prod-incidents"># prod-incidents</option>
+                  <option value="channel:service-health"># service-health</option>
+                  <option value="channel:release-watch"># release-watch</option>
+                  <option value="channel:cloud-alerts"># cloud-alerts</option>
+                  <option value="channel:infra-ops"># infra-ops</option>
+                  <option value="channel:payments-oncall"># payments-oncall</option>
+                  <option value="channel:payment-releases"># payment-releases</option>
+                </optgroup>
+              </select></label>
+          <label class="fpill" title="Status"><span class="pi">◉</span>
+            <select id="statusFilter" aria-label="Status">
+              <option value="">All statuses</option><option>Active</option><option>Monitoring</option><option>Resolved</option><option>Waiting for IC</option>
+            </select></label>
+          <button class="fpill clear" id="clearFilters" type="button" title="Clear filters">✕ Clear</button>
+        </div>
+        <div class="console">
+          <aside class="side">
+            <div class="panel">
+              <div class="panel-title">Teams groups &amp; channels <span class="count" id="userMonitoredCount">6/7</span></div>
+              <div class="legend"><span><i class="dot ok"></i>Added to bot</span><span><i class="dot off"></i>Not added</span></div>
+              <div id="userGroupChannelList"></div>
+              <p class="help">Admins can change coverage from Groups &amp; channels.</p>
+            </div>
+          </aside>
+          <div class="feed">
+            <div class="feed-head">
+              <div><span class="live"><i></i>LIVE FEED</span><h2>Channel incident board</h2><p id="resultCount" class="help"></p></div>
+              <button class="btn" id="refreshBtn" type="button">↻ Refresh</button>
+            </div>
+            <div id="incidentRows" class="ch-grid" aria-live="polite"></div>
+            <div id="emptyState" class="empty hidden">No incidents match these filters. Try a wider date range or clear your filters. <button class="link" type="button" onclick="document.getElementById('clearFilters').click()">Clear filters</button></div>
+            <p class="help">Each card is one channel with its latest incident first. Sample records are illustrative; production data should come from the authorized backend.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTROL ROOM -->
+      <section id="page-control" class="page hidden">
+        <div class="page-head"><div><h1>Control room</h1><p>Tune how OpsPilot watches Teams, assigns ownership, and coordinates response.</p></div><button class="btn primary" id="addChannelBtn" type="button">＋ Add channel</button></div>
+        <div class="callout"><strong>Admin controls:</strong> policies are configured independently for each channel. Removing a channel stops bot monitoring; it does not delete the Teams channel.</div>
+        <div class="section-title"><h2>Teams groups connected to OpsPilot</h2>
+        <div class="grp-grid" id="groupGrid"></div>
+        <div class="section-title row"><div><h2>Channel behavior policies</h2><p>Set automation rules individually for each Teams channel.</p></div><button class="btn primary" id="savePolicies" type="button">Save all policies</button></div>
+        <div class="pol-list" id="policyRows"></div>
+        <p class="help">Custom intervals are stored in minutes and should be validated server-side (1–120). The open-incident count excludes resolved and closed incidents. Enforce paging and meeting permissions in the backend.</p>
+      </section>
+    </main>
+  </div>
+
+  <div id="modalRoot"></div>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="OpsPilotDev.js"></script>
+</body>
+</html>
+
