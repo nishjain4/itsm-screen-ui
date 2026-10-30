@@ -1,118 +1,368 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="corporate">
+<html lang="en" data-theme="light" data-theme-mode="system">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OpsPilot — Vivid</title>
+  <meta name="description" content="OpsPilot — governed, auditable incident operations for Microsoft Teams." />
+  <meta name="color-scheme" content="light dark" />
+  <title>OpsPilot · Incident Operations</title>
+  <script>
+    // Resolve theme before first paint to avoid a flash of the wrong theme.
+    (function () {
+      var m = 'system';
+      try { m = localStorage.getItem('opspilot-enterprise-theme') || m } catch (e) { }
+      if (m === 'graphite') m = 'dark'; else if (m === 'corporate' || m === 'ocean') m = 'light';
+      var dark = m === 'dark' || (m === 'system' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      document.documentElement.dataset.themeMode = m;
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="OpsPilotVivid.css" />
 </head>
 <body>
-  <button class="back-btn" id="switchWs" type="button" title="Back to workspace selection">← Back</button>
-  <!-- ROLE GATE -->
-  <section id="roleGate" class="gate">
-    <div class="gate-left">
-      <div class="logo-lockup"><span class="logo">✺</span>OpsPilot</div>
-      <h1>Incident operations,<br /><span class="hl">governed and auditable.</span></h1>
-      <p>One workspace for incident ownership, updates, meetings and follow-ups — integrated with Microsoft Teams.</p>
-      <div class="blobs" aria-hidden="true"><i></i><i></i><i></i></div>
-      <button class="btn ghost" id="themeGate" type="button">◐ Theme</button>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- Icon sprite (Lucide-style, 24×24 stroke icons) -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <defs>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+      <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+      <symbol id="i-hash" viewBox="0 0 24 24"><path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/></symbol>
+      <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/></symbol>
+      <symbol id="i-activity" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></symbol>
+      <symbol id="i-filter" viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+      <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-15.36 6.36L3 16M3 12a9 9 0 0 1 15.36-6.36L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol>
+      <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+      <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+      <symbol id="i-panel-left" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></symbol>
+      <symbol id="i-monitor" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+      <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+      <symbol id="i-external" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+      <symbol id="i-video" viewBox="0 0 24 24"><path d="m16 13 5.22 3.48a.5.5 0 0 0 .78-.42V7.87a.5.5 0 0 0-.75-.43L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+      <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+      <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-10 5L2 7"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></symbol>
+      <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7"/><circle cx="12" cy="12" r="3"/></symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></symbol>
+      <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+      <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></symbol>
+      <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="m5 12 7-7 7 7M12 19V5"/></symbol>
+      <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></symbol>
+      <symbol id="i-sort" viewBox="0 0 24 24"><path d="m21 16-4 4-4-4M17 20V4M3 8l4-4 4 4M7 4v16"/></symbol>
+      <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+      <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5M12 7v5l4 2"/></symbol>
+      <symbol id="i-command" viewBox="0 0 24 24"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></symbol>
+      <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></symbol>
+      <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+      <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></symbol>
+      <symbol id="i-message" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+      <symbol id="i-dashboard" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></symbol>
+      <symbol id="i-keyboard" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    </defs>
+  </svg>
+
+  <!-- ================= WORKSPACE GATE ================= -->
+  <section id="roleGate" class="gate" aria-labelledby="gateTitle">
+    <div class="gate-brand">
+      <div class="brand brand-invert">
+        <span class="brand-mark" aria-hidden="true"><svg class="icon"><use href="#i-activity"/></svg></span>
+        <span class="brand-name">OpsPilot</span>
+        <span class="badge badge-ghost">Enterprise</span>
+      </div>
+      <div class="gate-hero">
+        <h1>Incident operations, <span>governed and auditable.</span></h1>
+        <p>One workspace for incident ownership, updates, meetings and follow-ups — natively integrated with Microsoft Teams.</p>
+        <ul class="gate-points">
+          <li><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg><span><b>Role-based access</b> for responders and administrators</span></li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-sliders"/></svg><span><b>Channel-level automation</b> policies with an audit trail</span></li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-zap"/></svg><span><b>Paging, Zoom and summaries</b> orchestrated in one flow</span></li>
+        </ul>
+      </div>
+      <div class="gate-meta"><span class="status-dot ok" aria-hidden="true"></span>All systems operational <span class="sep" aria-hidden="true">·</span> v3.2.0 <span class="sep" aria-hidden="true">·</span> Region EU-West</div>
     </div>
-    <div class="gate-right">
-      <span class="step-tag">STEP 01 / PICK A WORKSPACE</span>
-      <h2>Who's driving today?</h2>
-      <button class="role-tile pink" type="button" onclick="enterWorkspace('user')">
-        <span class="role-emoji">⌕</span>
-        <span><strong>User workspace</strong><small>Find threads, follow updates, check ownership, jump back into Teams.</small></span>
-        <span class="role-arrow">→</span>
-      </button>
-      <button class="role-tile lime" type="button" onclick="enterWorkspace('admin')">
-        <span class="role-emoji">⚙</span>
-        <span><strong>Admin workspace</strong><small>Manage Teams groups, monitoring scope, automation, paging and Zoom.</small></span>
-        <span class="role-arrow">→</span>
-      </button>
-      <div class="gate-foot">Design preview · mock data · no live connection</div>
+
+    <div class="gate-panel">
+      <div class="gate-panel-top">
+        <span class="badge badge-warning"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>Preview environment</span>
+        <button class="btn btn-ghost btn-icon" id="themeGate" type="button" aria-label="Toggle colour theme" title="Toggle colour theme"><svg class="icon theme-icon"><use href="#i-sun"/></svg></button>
+      </div>
+      <div class="gate-form">
+        <p class="eyebrow">Choose a workspace</p>
+        <h2 id="gateTitle">Who's driving today?</h2>
+        <p class="text-muted">Your role determines which tools and controls are available.</p>
+        <div class="role-list">
+          <button class="role-card" type="button" data-enter-role="user">
+            <span class="role-icon"><svg class="icon"><use href="#i-search"/></svg></span>
+            <span class="role-body"><strong>User workspace</strong><small>Find threads, follow updates, check ownership and jump back into Teams.</small><span class="role-tags"><span class="badge badge-outline">Incident viewer</span><span class="badge badge-outline">Read access</span></span></span>
+            <svg class="icon role-chev" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+          </button>
+          <button class="role-card" type="button" data-enter-role="admin">
+            <span class="role-icon role-icon-admin"><svg class="icon"><use href="#i-shield"/></svg></span>
+            <span class="role-body"><strong>Admin workspace</strong><small>Manage Teams groups, monitoring scope, automation, paging and Zoom.</small><span class="role-tags"><span class="badge badge-outline">Administrator</span><span class="badge badge-outline"><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg>Privileged</span></span></span>
+            <svg class="icon role-chev" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+          </button>
+        </div>
+        <p class="gate-foot">Design preview · mock data · no live connection. Access is enforced by the backend in production.</p>
+      </div>
     </div>
   </section>
 
-  <!-- APP -->
+  <!-- ================= APP SHELL ================= -->
   <div id="app" class="app hidden">
-    <div class="top-right-bar">
-      <button class="btn ghost" id="themeBtn" type="button">◐ Corporate</button>
-      <div class="who-box"><div class="avatar" id="topAvatar">U</div><div><strong id="topName">User preview</strong><small id="topRole">Incident viewer</small></div></div>
-    </div>
-
-    <main class="wrap">
-      <!-- CONSOLE -->
-      <section id="page-console" class="page">
-        <div class="page-head"><div><h1>Incident console</h1><p>Find an incident, understand the latest state, and return to the source conversation.</p></div></div>
-        <div class="toolbar">
-          <label class="fpill search"><span class="pi">⌕</span><input id="query" placeholder="Search incidents…" aria-label="Search incidents" /></label>
-          <label class="fpill" title="From date"><span class="pi">▦</span><span class="pl">From</span><input id="fromDate" type="date" aria-label="From date" /></label>
-          <label class="fpill" title="To date"><span class="pi">▦</span><span class="pl">To</span><input id="toDate" type="date" aria-label="To date" /></label>
-          <label class="fpill" title="Created by"><span class="pi">☺</span>
-            <select id="creatorFilter" aria-label="Created by"><option value="">All creators</option><option>Priya Sharma</option><option>Rahul Mehta</option><option>Alex Chen</option><option>Sam Wilson</option></select></label>
-          <label class="fpill" title="Team or channel"><span class="pi">#</span>
-            <select id="groupFilter" aria-label="Team or channel">
-              <option value="">All teams &amp; channels</option>
-              <optgroup label="Teams">
-                <option value="team:Platform Engineering">Platform Engineering</option>
-                <option value="team:Cloud Operations">Cloud Operations</option>
-                <option value="team:Payments Services">Payments Services</option>
-              </optgroup>
-              <optgroup label="Channels">
-                <option value="channel:prod-incidents"># prod-incidents</option>
-                <option value="channel:service-health"># service-health</option>
-                <option value="channel:release-watch"># release-watch</option>
-                <option value="channel:cloud-alerts"># cloud-alerts</option>
-                <option value="channel:infra-ops"># infra-ops</option>
-                <option value="channel:payments-oncall"># payments-oncall</option>
-                <option value="channel:payment-releases"># payment-releases</option>
-              </optgroup>
-            </select></label>
-          <label class="fpill" title="Status"><span class="pi">◉</span>
-            <select id="statusFilter" aria-label="Status"><option value="">All statuses</option><option>Active</option><option>Monitoring</option><option>Resolved</option><option>Waiting for IC</option></select></label>
-          <button class="fpill clear" id="clearFilters" type="button" title="Clear filters">✕ Clear</button>
+    <aside class="sidebar" id="sidebar" aria-label="Primary">
+      <div class="sidebar-head">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"><svg class="icon"><use href="#i-activity"/></svg></span>
+          <span class="brand-name">OpsPilot</span>
         </div>
-        <div class="console">
-          <div class="feed">
-            <div class="feed-head">
-              <div><span class="live"><i></i>LIVE FEED</span><h2>Channel incident board</h2><p id="resultCount" class="help"></p></div>
-              <button class="btn primary" id="refreshBtn" type="button">↻ Refresh</button>
+      </div>
+
+      <div class="ws-switch">
+        <span class="ws-avatar" id="wsAvatar" aria-hidden="true">U</span>
+        <span class="ws-text"><strong id="wsName">User workspace</strong><small id="wsRole">Incident viewer</small></span>
+      </div>
+
+      <nav class="nav" aria-label="Main navigation">
+        <p class="nav-label">Operate</p>
+        <button class="nav-item" type="button" data-page="console"><svg class="icon" aria-hidden="true"><use href="#i-dashboard"/></svg><span>Incident console</span><span class="nav-count" id="navOpenCount">0</span></button>
+        <div class="admin-only">
+          <p class="nav-label">Administer</p>
+          <button class="nav-item" type="button" data-page="control"><svg class="icon" aria-hidden="true"><use href="#i-sliders"/></svg><span>Control room</span><span class="nav-dirty hidden" id="navDirty" title="Unsaved policy changes"></span></button>
+        </div>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="sys-status" aria-label="Service health">
+          <p class="nav-label">Service health</p>
+          <div><span class="status-dot ok" aria-hidden="true"></span>Teams bot<span class="sys-ok">Operational</span></div>
+          <div><span class="status-dot ok" aria-hidden="true"></span>Microsoft Graph<span class="sys-ok">Operational</span></div>
+          <div><span class="status-dot warn" aria-hidden="true"></span>Zoom bridge<span class="sys-warn">Degraded</span></div>
+        </div>
+        <button class="nav-item" type="button" id="shortcutsBtn"><svg class="icon" aria-hidden="true"><use href="#i-keyboard"/></svg><span>Keyboard shortcuts</span><kbd>?</kbd></button>
+      </div>
+    </aside>
+    <div class="sidebar-scrim" id="sidebarScrim" hidden></div>
+
+    <div class="main-col">
+      <header class="topbar">
+        <button class="btn btn-ghost btn-icon" id="sidebarToggle" type="button" aria-label="Toggle sidebar" aria-controls="sidebar" aria-expanded="true"><svg class="icon"><use href="#i-panel-left"/></svg></button>
+        <span class="vsep" aria-hidden="true"></span>
+        <nav class="crumbs" aria-label="Breadcrumb"><ol><li>OpsPilot</li><li id="crumbWs">User workspace</li><li aria-current="page" id="crumbPage">Incident console</li></ol></nav>
+
+        <button class="cmdk-trigger" id="cmdkBtn" type="button" aria-label="Search and run commands (Ctrl+K)">
+          <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span>Search incidents, pages, actions…</span><kbd id="cmdkKbd">Ctrl K</kbd>
+        </button>
+
+        <div class="topbar-actions">
+          <span class="sync" id="syncStatus" title="Last data refresh"><span class="status-dot ok pulse" aria-hidden="true"></span><span id="syncText">Synced just now</span></span>
+          <span class="badge badge-warning env-badge" title="Mock data — no live connection">Preview</span>
+
+          <div class="menu-wrap">
+            <button class="btn btn-ghost btn-icon" id="notifBtn" type="button" aria-label="Notifications" aria-haspopup="true" aria-expanded="false" aria-controls="notifPanel"><svg class="icon"><use href="#i-bell"/></svg><span class="notif-dot" id="notifDot"></span></button>
+            <div class="popover notif-pop hidden" id="notifPanel" role="region" aria-label="Notifications">
+              <div class="popover-head"><strong>Notifications</strong><button class="btn btn-link btn-sm" id="markRead" type="button">Mark all as read</button></div>
+              <div id="notifList" class="notif-list"></div>
             </div>
-            <div id="incidentRows" class="ch-grid" aria-live="polite"></div>
-            <div id="emptyState" class="empty hidden">No incidents match these filters. Try a wider date range or clear your filters. <button class="link" type="button" onclick="document.getElementById('clearFilters').click()">Clear filters</button></div>
-            <p class="help">Each card is one channel with its latest incident first. Sample records are illustrative; production data should come from the authorized backend.</p>
           </div>
-          <aside class="side">
-            <div class="panel">
-              <div class="panel-title">Teams groups &amp; channels <span class="count" id="userMonitoredCount">6/7</span></div>
-              <div class="legend"><span><i class="dot ok"></i>Added to bot</span><span><i class="dot off"></i>Not added</span></div>
-              <div id="userGroupChannelList"></div>
-              <p class="help">Admins can change coverage from Groups &amp; channels.</p>
-            </div>
-          </aside>
-        </div>
-      </section>
 
-      <!-- CONTROL ROOM -->
-      <section id="page-control" class="page hidden">
-        <div class="page-head"><div><h1>Control room</h1><p>Tune how OpsPilot watches Teams, assigns ownership, and coordinates response.</p></div><button class="btn primary" id="addChannelBtn" type="button">＋ Add channel</button></div>
-        <div class="callout"><strong>Admin controls:</strong> policies are configured independently for each channel. Removing a channel stops bot monitoring; it does not delete the Teams channel.</div>
-        <div class="section-title"><h2>Teams groups connected to OpsPilot</h2><p>Only groups where the bot is installed and has access appear here.</p></div>
-        <div class="grp-grid" id="groupGrid"></div>
-        <div class="section-title row"><div><h2>Channel behavior policies</h2><p>Set automation rules individually for each Teams channel.</p></div><button class="btn primary" id="savePolicies" type="button">Save all policies</button></div>
-        <div class="pol-list" id="policyRows"></div>
-        <p class="help">Custom intervals are stored in minutes and should be validated server-side (1–120). The open-incident count excludes resolved and closed incidents. Enforce paging and meeting permissions in the backend.</p>
-      </section>
-    </main>
+          <div class="menu-wrap">
+            <button class="btn btn-ghost btn-icon" id="themeBtn" type="button" aria-label="Change theme" aria-haspopup="menu" aria-expanded="false" aria-controls="themeMenu"><svg class="icon theme-icon"><use href="#i-sun"/></svg></button>
+            <div class="menu hidden" id="themeMenu" role="menu" aria-label="Theme">
+              <button class="menu-item" role="menuitemradio" data-theme-set="light" type="button"><svg class="icon"><use href="#i-sun"/></svg>Light<svg class="icon menu-check"><use href="#i-check"/></svg></button>
+              <button class="menu-item" role="menuitemradio" data-theme-set="dark" type="button"><svg class="icon"><use href="#i-moon"/></svg>Dark<svg class="icon menu-check"><use href="#i-check"/></svg></button>
+              <button class="menu-item" role="menuitemradio" data-theme-set="system" type="button"><svg class="icon"><use href="#i-monitor"/></svg>System<svg class="icon menu-check"><use href="#i-check"/></svg></button>
+            </div>
+          </div>
+
+          <div class="menu-wrap">
+            <button class="user-btn" id="userBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="userMenu">
+              <span class="avatar" id="topAvatar">U</span>
+              <span class="user-meta"><strong id="topName">User preview</strong><small id="topRole">Incident viewer</small></span>
+              <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+            </button>
+            <div class="menu menu-right hidden" id="userMenu" role="menu" aria-label="Account">
+              <div class="menu-label"><strong id="menuName">User preview</strong><small id="menuEmail">user.preview@contoso.com</small></div>
+              <div class="menu-sep" role="separator"></div>
+              <button class="menu-item" role="menuitem" type="button" id="switchWs"><svg class="icon"><use href="#i-reset"/></svg>Switch workspace</button>
+              <button class="menu-item" role="menuitem" type="button" data-action="shortcuts"><svg class="icon"><use href="#i-keyboard"/></svg>Keyboard shortcuts</button>
+              <div class="menu-sep" role="separator"></div>
+              <button class="menu-item danger" role="menuitem" type="button" id="signOut"><svg class="icon"><use href="#i-logout"/></svg>Sign out</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="wrap" id="main" tabindex="-1">
+        <!-- ============ INCIDENT CONSOLE ============ -->
+        <section id="page-console" class="page" aria-labelledby="consoleTitle">
+          <div class="page-head">
+            <div>
+              <h1 id="consoleTitle">Incident console</h1>
+              <p>Find an incident, understand the latest state, and return to the source conversation.</p>
+            </div>
+            <div class="page-actions">
+              <button class="btn btn-outline" id="exportBtn" type="button"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>Export CSV</button>
+              <button class="btn btn-primary" id="refreshBtn" type="button"><svg class="icon" aria-hidden="true"><use href="#i-refresh"/></svg>Refresh</button>
+            </div>
+          </div>
+
+          <div class="kpis" id="kpis" role="group" aria-label="Incident summary — select a card to filter"></div>
+
+          <div class="card toolbar-card">
+            <div class="toolbar" role="search" aria-label="Filter incidents">
+              <label class="field-inline search-field">
+                <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+                <input id="query" type="search" placeholder="Search by ID, title, person, channel…" aria-label="Search incidents" autocomplete="off" />
+                <kbd aria-hidden="true">/</kbd>
+              </label>
+              <label class="field-inline" title="From date"><span class="fi-label">From</span><input id="fromDate" type="date" aria-label="From date" /></label>
+              <label class="field-inline" title="To date"><span class="fi-label">To</span><input id="toDate" type="date" aria-label="To date" /></label>
+              <label class="field-inline" title="Created by"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg>
+                <select id="creatorFilter" aria-label="Created by"><option value="">All creators</option><option>Priya Sharma</option><option>Rahul Mehta</option><option>Alex Chen</option><option>Sam Wilson</option></select></label>
+              <label class="field-inline" title="Team or channel"><svg class="icon" aria-hidden="true"><use href="#i-hash"/></svg>
+                <select id="groupFilter" aria-label="Team or channel">
+                  <option value="">All teams &amp; channels</option>
+                  <optgroup label="Teams">
+                    <option value="team:Platform Engineering">Platform Engineering</option>
+                    <option value="team:Cloud Operations">Cloud Operations</option>
+                    <option value="team:Payments Services">Payments Services</option>
+                  </optgroup>
+                  <optgroup label="Channels">
+                    <option value="channel:prod-incidents"># prod-incidents</option>
+                    <option value="channel:service-health"># service-health</option>
+                    <option value="channel:release-watch"># release-watch</option>
+                    <option value="channel:cloud-alerts"># cloud-alerts</option>
+                    <option value="channel:infra-ops"># infra-ops</option>
+                    <option value="channel:payments-oncall"># payments-oncall</option>
+                    <option value="channel:payment-releases"># payment-releases</option>
+                  </optgroup>
+                </select></label>
+              <label class="field-inline" title="Status"><svg class="icon" aria-hidden="true"><use href="#i-activity"/></svg>
+                <select id="statusFilter" aria-label="Status"><option value="">All statuses</option><option>Active</option><option>Monitoring</option><option>Resolved</option><option>Waiting for IC</option></select></label>
+              <button class="btn btn-ghost btn-sm" id="clearFilters" type="button"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>Reset</button>
+            </div>
+            <div class="active-filters hidden" id="activeFilters" aria-label="Active filters"></div>
+          </div>
+
+          <div class="console">
+            <div class="feed">
+              <div class="feed-head">
+                <div>
+                  <div class="feed-title"><h2>Channel incident board</h2><span class="live"><i aria-hidden="true"></i>Live</span></div>
+                  <p id="resultCount" class="text-muted text-sm" aria-live="polite"></p>
+                </div>
+                <div class="segmented" role="radiogroup" aria-label="View">
+                  <button type="button" role="radio" data-view="board" aria-checked="true"><svg class="icon" aria-hidden="true"><use href="#i-grid"/></svg>Board</button>
+                  <button type="button" role="radio" data-view="table" aria-checked="false"><svg class="icon" aria-hidden="true"><use href="#i-list"/></svg>Table</button>
+                </div>
+              </div>
+              <div id="incidentRows" class="ch-grid" aria-live="polite"></div>
+              <div id="incidentTable" class="table-wrap hidden"></div>
+              <div id="emptyState" class="empty hidden">
+                <span class="empty-icon"><svg class="icon"><use href="#i-search"/></svg></span>
+                <h3>No incidents match these filters</h3>
+                <p>Try a wider date range or reset your filters.</p>
+                <button class="btn btn-outline btn-sm" type="button" data-action="clear-filters">Reset filters</button>
+              </div>
+              <p class="text-muted text-xs foot-note">Each card is one channel with its latest incident first. Sample records are illustrative; production data should come from the authorized backend.</p>
+            </div>
+
+            <aside class="side" aria-labelledby="coverageTitle">
+              <div class="card">
+                <div class="card-head">
+                  <div><h3 id="coverageTitle">Monitoring coverage</h3><p class="text-muted text-xs">Teams groups &amp; channels</p></div>
+                  <span class="badge badge-secondary mono" id="userMonitoredCount">6/7</span>
+                </div>
+                <div class="progress" role="progressbar" aria-label="Channels monitored" aria-valuemin="0" aria-valuemax="100" id="coverageBar"><span></span></div>
+                <div class="legend"><span><i class="dot ok"></i>Added to bot</span><span><i class="dot off"></i>Not added</span></div>
+                <div id="userGroupChannelList"></div>
+                <p class="text-muted text-xs">Select a channel to filter the board. Admins can change coverage in the Control room.</p>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- ============ CONTROL ROOM ============ -->
+        <section id="page-control" class="page hidden" aria-labelledby="controlTitle">
+          <div class="page-head">
+            <div>
+              <h1 id="controlTitle">Control room</h1>
+              <p>Tune how OpsPilot watches Teams, assigns ownership, and coordinates response.</p>
+            </div>
+            <div class="page-actions">
+              <button class="btn btn-primary" id="addChannelBtn" type="button"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>Add channel</button>
+            </div>
+          </div>
+
+          <div class="alert" role="note">
+            <svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>
+            <div><strong>Policies are configured per channel.</strong> Removing a channel stops bot monitoring; it does not delete the Teams channel. Every change is recorded in the audit log.</div>
+          </div>
+
+          <div class="kpis kpis-admin" id="adminStats"></div>
+
+          <div class="tabs" role="tablist" aria-label="Control room sections">
+            <button class="tab" role="tab" id="tab-groups" aria-controls="panel-groups" aria-selected="true" type="button"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg>Teams groups</button>
+            <button class="tab" role="tab" id="tab-policies" aria-controls="panel-policies" aria-selected="false" tabindex="-1" type="button"><svg class="icon" aria-hidden="true"><use href="#i-sliders"/></svg>Channel policies<span class="tab-badge hidden" id="dirtyTabBadge"></span></button>
+            <button class="tab" role="tab" id="tab-audit" aria-controls="panel-audit" aria-selected="false" tabindex="-1" type="button"><svg class="icon" aria-hidden="true"><use href="#i-history"/></svg>Audit log<span class="tab-count" id="auditCount">0</span></button>
+          </div>
+
+          <div class="tabpanel" role="tabpanel" id="panel-groups" aria-labelledby="tab-groups" tabindex="0">
+            <div class="section-title"><div><h2>Teams groups connected to OpsPilot</h2><p>Only groups where the bot is installed and has access appear here.</p></div></div>
+            <div class="grp-grid" id="groupGrid"></div>
+          </div>
+
+          <div class="tabpanel hidden" role="tabpanel" id="panel-policies" aria-labelledby="tab-policies" tabindex="0">
+            <div class="section-title">
+              <div><h2>Channel behavior policies</h2><p>Set automation rules individually for each Teams channel.</p></div>
+              <div class="section-tools">
+                <label class="field-inline"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><input id="policySearch" type="search" placeholder="Filter channels…" aria-label="Filter channel policies" autocomplete="off" /></label>
+                <label class="field-inline"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><select id="policyGroup" aria-label="Filter by Teams group"><option value="">All groups</option></select></label>
+              </div>
+            </div>
+            <div class="pol-list" id="policyRows"></div>
+            <div class="empty hidden" id="policyEmpty"><span class="empty-icon"><svg class="icon"><use href="#i-filter"/></svg></span><h3>No channels match</h3><p>Adjust the filter to see more channels.</p></div>
+            <p class="text-muted text-xs foot-note">Custom intervals are stored in minutes and should be validated server-side (1–120). The open-incident count excludes resolved and closed incidents. Enforce paging and meeting permissions in the backend.</p>
+          </div>
+
+          <div class="tabpanel hidden" role="tabpanel" id="panel-audit" aria-labelledby="tab-audit" tabindex="0">
+            <div class="section-title"><div><h2>Audit log</h2><p>Configuration changes made in this workspace, newest first.</p></div><button class="btn btn-outline btn-sm" id="exportAudit" type="button"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>Export</button></div>
+            <div class="table-wrap" id="auditTable"></div>
+          </div>
+
+          <div class="savebar hidden" id="saveBar" role="region" aria-label="Unsaved changes">
+            <span class="savebar-dot" aria-hidden="true"></span>
+            <span id="saveBarText">You have unsaved policy changes</span>
+            <button class="btn btn-ghost btn-sm" id="discardPolicies" type="button">Discard</button>
+            <button class="btn btn-primary btn-sm" id="savePolicies" type="button"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Save all policies</button>
+          </div>
+        </section>
+      </main>
+    </div>
   </div>
 
   <div id="modalRoot"></div>
-  <div id="toast" class="toast" role="status"></div>
+  <div id="toaster" class="toaster" aria-live="polite" aria-relevant="additions"></div>
   <script src="OpsPilotVivid.js"></script>
 </body>
 </html>
-

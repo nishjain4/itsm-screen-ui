@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="OpsPilot — governed, auditable incident operations for Microsoft Teams." />
+    <meta name="color-scheme" content="light dark" />
+    <title>OpsPilot · Teams layout</title>
+    <script>
+      // Apply the saved theme (light or dark) before first paint; matches MUI's `mui-mode` storage key.
+      (function () {
+        var mode = 'light';
+        try { mode = localStorage.getItem('mui-mode') || mode } catch (e) {}
+        // Migrate the retired "system" option to a concrete theme so MUI never uses it.
+        if (mode !== 'light' && mode !== 'dark') {
+          mode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          try { localStorage.setItem('mui-mode', mode) } catch (e) {}
+        }
+        document.documentElement.classList.add(mode);
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>OpsPilot requires JavaScript to run.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,82 @@
+/* Cascade layers: MUI (Emotion) styles sit below Tailwind utilities so utilities can override them. */
+@layer theme, base, mui, components, utilities;
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Bridge MUI's CSS variables into Tailwind tokens: one palette for both systems. */
+@theme inline {
+  /* Universal sans-serif stack (keep in sync with `fontSans` in theme.ts). */
+  --font-sans: system-ui, 'Segoe UI', Arial, sans-serif,  'Segoe UI Emoji';
+  --color-primary: var(--mui-palette-primary-main);
+  --color-secondary: var(--mui-palette-secondary-main);
+  --color-canvas: var(--mui-palette-background-default);
+  --color-paper: var(--mui-palette-background-paper);
+  --color-fg: var(--mui-palette-text-primary);
+  --color-muted: var(--mui-palette-text-secondary);
+  --color-line: var(--mui-palette-divider);
+  --color-hover: var(--mui-palette-action-hover);
+  --color-st-active: var(--mui-palette-error-main);
+  --color-st-monitoring: var(--mui-palette-warning-main);
+  --color-st-resolved: var(--mui-palette-success-main);
+  --color-st-waiting: var(--mui-palette-info-main);
+}
+
+@layer base {
+  /* Base size for the Teams layout: scales rem-based Tailwind and MUI sizes. */
+  html { -webkit-text-size-adjust: 100%; font-size: 17px; }
+  code, kbd, samp, pre { font-family: inherit; }
+  kbd {
+    font: 500 11px var(--font-sans);
+    background: var(--color-hover);
+    border: 1px solid var(--color-line);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    padding: 0 5px;
+    color: var(--color-muted);
+    line-height: 18px;
+    min-width: 20px;
+    text-align: center;
+    display: inline-block;
+  }
+}
+
+@layer components {
+  .subtle-bg { background-color: color-mix(in srgb, var(--color-canvas) 60%, var(--color-paper)); }
+  .tint-active { background-color: color-mix(in srgb, var(--color-st-active) 11%, transparent); color: var(--color-st-active); }
+  .tint-monitoring { background-color: color-mix(in srgb, var(--color-st-monitoring) 12%, transparent); color: var(--color-st-monitoring); }
+  .tint-resolved { background-color: color-mix(in srgb, var(--color-st-resolved) 11%, transparent); color: var(--color-st-resolved); }
+  .tint-waiting { background-color: color-mix(in srgb, var(--color-st-waiting) 11%, transparent); color: var(--color-st-waiting); }
+  .tint-primary { background-color: color-mix(in srgb, var(--color-primary) 11%, transparent); color: var(--color-primary); }
+  .tint-secondary { background-color: color-mix(in srgb, var(--color-secondary) 11%, transparent); color: var(--color-secondary); }
+  /* Teams-style app chrome (header + app rail) and list pane surfaces. */
+  .chrome-bg { background-color: #ebebeb; }
+  .dark .chrome-bg { background-color: #0a0a0a; }
+  .pane-bg { background-color: #fafafa; }
+  .dark .pane-bg { background-color: #141414; }
+  /* Teams-style filter pills. */
+  .pill {
+    display: inline-flex; align-items: center; gap: .375rem; height: 2rem; padding: 0 .875rem;
+    border-radius: 9999px; font-size: 14px; font-weight: 500; white-space: nowrap; color: var(--color-fg);
+    background-color: color-mix(in srgb, var(--color-primary) 13%, var(--color-paper));
+    transition: background-color .15s, color .15s;
+  }
+  .pill:hover { background-color: color-mix(in srgb, var(--color-primary) 24%, var(--color-paper)); }
+  .pill:focus-visible, .pill:focus-within { outline: 2px solid var(--color-primary); outline-offset: 1px; }
+  .pill[data-active='true'] { background-color: var(--color-primary); color: #fff; }
+  .pill input { background: transparent; border: 0; outline: 0; color: inherit; font: inherit; width: 8.25rem; }
+  .pill input::-webkit-calendar-picker-indicator { filter: var(--pill-picker-filter, none); cursor: pointer; }
+  .dark .pill, .pill[data-active='true'] { --pill-picker-filter: invert(1); }
+  .gate-grid {
+    background-image: linear-gradient(rgb(255 255 255 / .04) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / .04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse at 30% 40%, #000 30%, transparent 75%);
+  }
+}
+
+@keyframes pulse-soft { 50% { opacity: .35; } }
+.animate-pulse-soft { animation: pulse-soft 1.8s infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
