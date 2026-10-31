@@ -14,7 +14,7 @@ export function IncidentCard({ incident: i }: { incident: Incident }) {
     <Card
       component="article"
       aria-labelledby={`inc-${i.id}`}
-      className="flex h-full flex-col gap-3.5 p-4 transition-shadow hover:shadow-md"
+      className="flex h-full flex-col gap-7.5 p-6 transition-shadow hover:shadow-md"
     >
       <header className="flex items-center justify-between gap-2">
         <Link
@@ -23,7 +23,7 @@ export function IncidentCard({ incident: i }: { incident: Incident }) {
           color="inherit"
           onClick={() => app.openChannel({ team: i.team, channel: i.channel })}
           title={`Open # ${i.channel}`}
-          className="min-w-0 truncate text-[13px]! font-medium! text-muted!"
+          className="min-w-0 truncate text-[11px]! font-medium! text-muted!"
         >
           # {i.channel}
         </Link>
@@ -36,20 +36,24 @@ export function IncidentCard({ incident: i }: { incident: Incident }) {
           underline="hover"
           color="inherit"
           onClick={() => app.setOpenIncidentId(i.id)}
-          className="mb-1 block text-left text-[15.5px]! leading-snug font-semibold! tracking-tight hover:text-primary!"
+          className="mb-1 block text-left text-[16.5px]! leading-snug font-semibold! hover:text-primary!"
         >
           {i.title}
         </Link>
-        <p className="line-clamp-2 text-[13px] leading-relaxed text-muted">{i.summary}</p>
+        <p className="line-clamp-2 text-[11px] leading-relaxed text-muted text-justify">{i.summary}</p>
       </div>
       <footer className="flex items-center justify-between gap-2 border-t border-line pt-3">
         <div className="min-w-0 text-[13px]">
-          <span className="mr-1.5 text-muted">Reported by</span>
+          {/*
+          <span className="mr-1.5 text-muted">By</span>
+          */}
           <Person name={i.creator} />
         </div>
+        {/*
         <Button size="small" color="inherit" startIcon={<EyeIcon />} onClick={() => app.setOpenIncidentId(i.id)} aria-label={`View details for ${i.id}`}>
           View details
         </Button>
+        */}
       </footer>
     </Card>
   )
@@ -58,7 +62,7 @@ export function IncidentCard({ incident: i }: { incident: Incident }) {
 /** One card per incident, newest first. */
 export function IncidentBoard({ data }: { data: Incident[] }) {
   return (
-    <div className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-4.5 sm:grid-cols-2 xl:grid-cols-3">
       {sortIncidents(data, { key: 'date', dir: 'desc' }).map(i => (
         <IncidentCard key={i.id} incident={i} />
       ))}
