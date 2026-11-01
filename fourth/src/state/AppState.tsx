@@ -64,7 +64,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [role, setRole] = useState<Role | null>(null)
   const [page, setPage] = useState<Page>('console')
   const [controlTab, setControlTab] = useState<ControlTab>('groups')
-  const [view, setViewState] = useState<BoardView>(() => (store.get('view', 'board') === 'table' ? 'table' : 'board'))
+  const [view, setViewState] = useState<BoardView>('table')
   const [filters, setFiltersState] = useState<Filters>(EMPTY_FILTERS)
   const [sort, setSort] = useState<SortState>({ key: 'date', dir: 'desc' })
   const [incidents] = useState<Incident[]>(INCIDENTS)
@@ -136,13 +136,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const filterByChannel = useCallback(
     (name: string) => {
       if (role === 'admin') return
-      const g = groups.find(x => x.channels.some(c => c.name === name))
-      if (!g) return
-      openChannel({ team: g.name, channel: name })
+      setFiltersState(f => ({ ...f, scope: `channel:${name}` }))
       setOpenIncidentId(null)
+      setChannel(null)
       setPage('console')
     },
-    [groups, role, openChannel],
+    [role],
   )
 
   const setDraft = useCallback((key: string, value: CoreValues | null) => {

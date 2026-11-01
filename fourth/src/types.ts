@@ -1,7 +1,7 @@
 export type Role = 'user' | 'admin'
 export type Page = 'console' | 'control'
 export type ControlTab = 'groups' | 'policies' | 'audit'
-export type BoardView = 'board' | 'table'
+export type BoardView = 'table'
 
 export type IncidentStatus = 'Active' | 'Monitoring' | 'Resolved' | 'Waiting for IC'
 export type ZoomState = 'live' | 'scheduled' | 'ended' | 'none'

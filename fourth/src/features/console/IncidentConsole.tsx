@@ -1,17 +1,13 @@
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
-import ToggleButton from '@mui/material/ToggleButton'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import { DashboardIcon, GridIcon, ListIcon, SearchIcon } from '../../components/icons'
+import { DashboardIcon, SearchIcon } from '../../components/icons'
 import { EmptyState } from '../../components/ui'
 import { filterIncidents, plural } from '../../lib/utils'
 import { useApp } from '../../state/AppState'
-import type { BoardView } from '../../types'
 import { ChannelView } from './ChannelView'
 import { FilterBar } from './FilterBar'
-import { IncidentBoard } from './IncidentBoard'
 import { IncidentTable } from './IncidentTable'
-import { BoardSkeleton, ViewActions } from './ViewParts'
+import { ViewActions } from './ViewParts'
 
 function GlobalView() {
   const app = useApp()
@@ -48,28 +44,10 @@ function GlobalView() {
             <div className="min-w-0 flex-1 sm:max-w-[560px]">
               <FilterBar />
             </div>
-            <ToggleButtonGroup
-              size="small"
-              exclusive
-              value={app.view}
-              onChange={(_, v: BoardView | null) => v && app.setView(v)}
-              aria-label="View"
-              className="ml-auto flex-none"
-              sx={{ height: 46, '& .MuiToggleButton-root': { textTransform: 'none', gap: 0.75, px: 1.5, fontSize: 14 } }}
-            >
-              <ToggleButton value="board" aria-label="Board view">
-                <GridIcon sx={{ fontSize: 16 }} /> <span className="max-sm:hidden">Board</span>
-              </ToggleButton>
-              <ToggleButton value="table" aria-label="Table view">
-                <ListIcon sx={{ fontSize: 16 }} /> <span className="max-sm:hidden">Table</span>
-              </ToggleButton>
-            </ToggleButtonGroup>
           </div>
 
           <div aria-live="polite" aria-busy={app.refreshing}>
-            {app.refreshing ? (
-              <BoardSkeleton />
-            ) : !data.length ? (
+            {!data.length ? (
               <EmptyState
                 icon={<SearchIcon />}
                 title="No incidents match these filters"
@@ -77,8 +55,6 @@ function GlobalView() {
               >
                 Try a wider date range or reset your filters.
               </EmptyState>
-            ) : app.view === 'board' ? (
-              <IncidentBoard data={data} />
             ) : (
               <IncidentTable data={data} />
             )}
