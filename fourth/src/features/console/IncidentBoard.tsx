@@ -1,7 +1,5 @@
-import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import Link from '@mui/material/Link'
-import { EyeIcon } from '../../components/icons'
 import { Person, StatusChip } from '../../components/ui'
 import { sortIncidents } from '../../lib/utils'
 import { useApp } from '../../state/AppState'

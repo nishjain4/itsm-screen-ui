@@ -19,8 +19,6 @@ const COLS: [SortKey, string][] = [
   ['id', 'ID'],
   ['title', 'Incident'],
   ['status', 'Status'],
-  ['team', 'Team'],
-  ['ic', 'Commander'],
   ['creator', 'Reported by'],
   ['date', 'Date'],
 ]
@@ -62,13 +60,11 @@ export function IncidentTable({ data }: { data: Incident[] }) {
                   <Link component="button" underline="hover" color="inherit" onClick={() => app.setOpenIncidentId(i.id)} className="text-left font-medium! hover:text-primary!">
                     {i.title}
                   </Link>
-                  <Link component="button" underline="hover" color="textSecondary" onClick={() => app.openChannel({ team: i.team, channel: i.channel })} className="block text-xs!">
+                  <Link component="button" underline="hover" color="textSecondary" onClick={() => app.filterByChannel(i.channel)} className="block text-xs!">
                     # {i.channel}
                   </Link>
                 </TableCell>
                 <TableCell><StatusChip status={i.status} /></TableCell>
-                <TableCell>{i.team}</TableCell>
-                <TableCell><Person name={i.ic} /></TableCell>
                 <TableCell><Person name={i.creator} /></TableCell>
                 <TableCell className="text-xs!">{formatDate(i.date)}</TableCell>
                 <TableCell align="right">

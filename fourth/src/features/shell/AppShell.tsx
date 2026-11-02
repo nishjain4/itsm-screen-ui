@@ -85,7 +85,9 @@ export function AppShell() {
           ))}
 
         <main id="main" tabIndex={-1} className="min-w-0 flex-1 outline-none">
-          {app.page === 'console' ? (
+          {app.openIncidentId ? (
+            <IncidentSheet fullPage />
+          ) : app.page === 'console' ? (
             <IncidentConsole />
           ) : (
             <div className="h-full overflow-auto">
@@ -97,7 +99,7 @@ export function AppShell() {
         </main>
       </div>
 
-      <IncidentSheet />
+      {!app.openIncidentId && <IncidentSheet />}
       {addOpen && <AddChannelDialog open onClose={() => setAddOpen(false)} />}
     </div>
   )
