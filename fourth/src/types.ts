@@ -1,4 +1,4 @@
-export type Role = 'user' | 'admin'
+export type Role = 'user' | 'admin' | 'status'
 export type Page = 'console' | 'control'
 export type ControlTab = 'groups' | 'policies' | 'audit'
 export type BoardView = 'table'

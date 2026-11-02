@@ -7,6 +7,8 @@ import { plural, store } from '../../lib/utils'
 import { useApp, useDirtyCount } from '../../state/AppState'
 import { IncidentConsole } from '../console/IncidentConsole'
 import { IncidentSheet } from '../console/IncidentSheet'
+import { TicketStatusBoard } from '../console/TicketStatusBoard'
+import { UserTicketWorkspace } from '../console/UserTicketWorkspace'
 import { AddChannelDialog } from '../control/ChannelDialogs'
 import { ControlRoom } from '../control/ControlRoom'
 import { AppRail } from './AppRail'
@@ -24,17 +26,16 @@ export function AppShell() {
   const [paneHidden, setPaneHidden] = useState(() => store.get('pane-hidden', '0') === '1')
   const [mobileOpen, setMobileOpen] = useState(false)
   const [addOpen, setAddOpen] = useState(false)
-  const admin = app.role === 'admin'
+  const userWorkspace = app.role === 'user' || app.role === 'status'
 
   const toggleNav = useCallback(() => {
-    if (admin) return
     if (desktop)
       setPaneHidden(h => {
         store.set('pane-hidden', h ? '0' : '1')
         return !h
       })
     else setMobileOpen(o => !o)
-  }, [desktop, admin])
+  }, [desktop])
 
   const leave = useCallback(
     async (signOut: boolean) => {
@@ -54,38 +55,44 @@ export function AppShell() {
   )
 
   useEffect(() => {
-    document.title = `${app.page === 'control' ? 'Control room' : app.channel ? '# ' + app.channel.channel : 'All incidents'} · OpsPilot`
-  }, [app.page, app.channel])
+    document.title = `${app.role === 'status' ? 'Status Page' : app.role === 'user' ? 'My tickets' : app.page === 'control' ? 'Control room' : app.channel ? '# ' + app.channel.channel : 'All incidents'} · OpsPilot`
+  }, [app.role, app.page, app.channel])
 
   const pane = <TeamsPane onNavigate={() => setMobileOpen(false)} />
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden bg-canvas">
-      <Topbar onToggleNav={toggleNav} navExpanded={desktop ? !paneHidden : mobileOpen} showNavToggle={!admin} onLeave={leave} />
+      <Topbar onLeave={leave} />
 
       <div className="flex min-h-0 flex-1">
-        <AppRail onLeave={leave} />
+        {!userWorkspace && <AppRail onLeave={leave} onToggleNav={toggleNav} />}
 
-        {!admin &&
-          (desktop ? (
-            !paneHidden && (
-              <aside id="teams-pane" className="flex-none border-r border-line pane-bg" style={{ width: PANE }}>
-                {pane}
-              </aside>
-            )
-          ) : (
-            <Drawer
-              id="teams-pane"
-              open={mobileOpen}
-              onClose={() => setMobileOpen(false)}
-              slotProps={{ paper: { className: 'pane-bg', sx: { width: PANE, backgroundImage: 'none' } } }}
-            >
+        {!userWorkspace && (desktop ? (
+          !paneHidden && (
+            <aside id="teams-pane" className="flex-none border-r border-line pane-bg" style={{ width: PANE }}>
               {pane}
-            </Drawer>
-          ))}
+            </aside>
+          )
+        ) : (
+          <Drawer
+            id="teams-pane"
+            open={mobileOpen}
+            onClose={() => setMobileOpen(false)}
+            slotProps={{ paper: { className: 'pane-bg', sx: { width: PANE, backgroundImage: 'none' } } }}
+          >
+            {pane}
+          </Drawer>
+        ))}
 
         <main id="main" tabIndex={-1} className="min-w-0 flex-1 outline-none">
-          {app.openIncidentId ? (
+          {userWorkspace ? (
+            <>
+              <div className={app.openIncidentId ? 'hidden h-full' : 'h-full'}>
+                {app.role === 'status' ? <TicketStatusBoard /> : <UserTicketWorkspace />}
+              </div>
+              {app.openIncidentId && <IncidentSheet fullPage />}
+            </>
+          ) : app.openIncidentId ? (
             <IncidentSheet fullPage />
           ) : app.page === 'console' ? (
             <IncidentConsole />

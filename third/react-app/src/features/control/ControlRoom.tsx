@@ -40,7 +40,7 @@ export function ControlRoom({ onAddChannel }: { onAddChannel: () => void }) {
           allowScrollButtonsMobile
           sx={{ minWidth: 0, mb: '-1px', '& .MuiTab-root': { minHeight: 52, fontSize: 14.5 } }}
         >
-          <Tab value="groups" id="tab-groups" aria-controls="panel-groups" icon={<GroupsIcon fontSize="small" />} iconPosition="start" label="Teams groups" />
+          <Tab value="groups" id="tab-groups" aria-controls="panel-groups" icon={<GroupsIcon fontSize="small" />} iconPosition="start" label="Service groups" />
           <Tab
             value="policies"
             id="tab-policies"
@@ -64,7 +64,7 @@ export function ControlRoom({ onAddChannel }: { onAddChannel: () => void }) {
       </div>
 
       <Alert severity="info" variant="outlined" className="mb-4.5 tint-primary" sx={{ color: 'text.primary', borderColor: 'primary.main' }}>
-        <strong>Policies are configured per channel.</strong> Removing a channel stops bot monitoring; it does not delete the Teams channel. Every change is recorded in the audit log.
+        <strong>Policies are configured per channel.</strong> Removing a channel stops monitoring; it does not delete the underlying channel. Every change is recorded in the audit log.
       </Alert>
 
       <div role="tabpanel" id={`panel-${app.controlTab}`} aria-labelledby={`tab-${app.controlTab}`} tabIndex={0} className="flex flex-1 flex-col outline-none">

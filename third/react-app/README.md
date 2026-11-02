@@ -35,7 +35,7 @@ src/
   theme.ts            MUI theme (light/dark colour schemes, component defaults)
   index.css           Tailwind + token bridge + small component classes
   types.ts            Domain types
-  data/mock.ts        Mock incidents, Teams groups, audit seed, constants
+  data/mock.ts        Mock incidents, service groups, audit seed, constants
   lib/utils.ts        Filtering, sorting, CSV export (formula-injection safe), validation
   state/AppState.tsx  App-wide state: role, navigation, filters, policy drafts, audit log
   components/         Toasts, confirm dialog, icons, shared UI (status chips, empty states…)
@@ -50,7 +50,7 @@ src/
 
 - Role-based workspaces (viewer / administrator) with access checks on navigation.
 - Incident console: filters with removable chips, board (masonry) and sortable table views, incident detail drawer with activity timeline, CSV export, refresh with skeleton loading.
-- Control room: Teams group overview, per-channel policy toggles tracked as drafts with a sticky save/discard bar, audit log (exportable), advanced settings with inline validation and drag / arrow / Alt+↑↓ reordering of the automation workflow, channel management with confirmation before disabling monitoring.
+- Control room: service group overview, per-channel policy toggles tracked as drafts with a sticky save/discard bar, audit log (exportable), advanced settings with inline validation and drag / arrow / Alt+↑↓ reordering of the automation workflow, channel management with confirmation before disabling monitoring.
 - Command palette (Ctrl/⌘ K), keyboard shortcuts (`/`, `[`, `?`), notifications, light/dark theme, collapsible sidebar and mobile drawer.
 - Accessibility: MUI focus management for dialogs/menus/tabs, labelled controls, `aria-live` regions, skip link, reduced-motion support.
 

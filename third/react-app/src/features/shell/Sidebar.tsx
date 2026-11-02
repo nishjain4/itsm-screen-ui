@@ -42,7 +42,7 @@ const label = (text: string, collapsed: boolean) =>
   )
 
 const HEALTH: [string, 'ok' | 'warn', string][] = [
-  ['Teams bot', 'ok', 'Operational'],
+  ['Incident service', 'ok', 'Operational'],
   ['Microsoft Graph', 'ok', 'Operational'],
   ['Zoom bridge', 'warn', 'Degraded'],
 ]

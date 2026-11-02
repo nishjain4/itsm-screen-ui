@@ -15,7 +15,7 @@ export function useExportIncidents() {
     downloadCsv(
       `opspilot-incidents-${today()}.csv`,
       toCsv([
-        ['ID', 'Title', 'Status', 'Team', 'Channel', 'Incident Commander', 'Reported by', 'Date', 'Summary'],
+        ['ID', 'Title', 'Status', 'Group', 'Channel', 'Incident Commander', 'Reported by', 'Date', 'Summary'],
         ...data.map(i => [i.id, i.title, i.status, i.team, i.channel, i.ic, i.creator, i.date, i.summary]),
       ]),
     )

@@ -16,7 +16,7 @@ export function CoveragePanel() {
       <div className="mb-3 flex items-start justify-between gap-2.5">
         <div>
           <h3 id="coverage-title" className="text-sm font-semibold">Monitoring coverage</h3>
-          <p className="text-xs text-muted">Teams groups &amp; channels</p>
+          <p className="text-xs text-muted">Service groups &amp; channels</p>
         </div>
         <Chip size="small" label={`${enabled}/${total}`} className="tabular-nums" />
       </div>

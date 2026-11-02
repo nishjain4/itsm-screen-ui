@@ -1,10 +1,10 @@
-# OpsPilot — Teams layout (fourth layout)
+# OpsPilot — Ticket workspace (fourth layout)
 
-Same features as the third layout's React app (`../third/react-app`), re-arranged like Microsoft Teams: an app rail and a **Teams & channels** pane on the left, and the incidents on the right. Built with **React 19 + TypeScript**, **Material UI v9** and **Tailwind CSS v4**, bundled with **Vite**.
+The incident-viewer workspace opens without a sidebar and presents two choices: tickets reported by the current user, or all tickets sorted newest first with current status and live-bridge indicators. Selecting a ticket opens its full details. The administrator workspace retains its Teams and channel navigation for configuration. Built with **React 19 + TypeScript**, **Material UI v9** and **Tailwind CSS v4**, bundled with **Vite**.
 
-- **All incidents** (no channel selected): the global filter bar (search, from/to, created by, status) sits on top, with board / table views, CSV export and refresh.
-- **All incidents** (no channel selected): a search bar on top; clicking it reveals Teams-style filter pills (from/to, created by, status). Board / table views, CSV export and refresh.
-- **Channel selected**: a Teams-style channel feed with one incident card per post (oldest → newest, grouped by day), *Posts* / *Open* tabs, and a search icon that opens a *Find in channel* panel (keyword + status, date, person, meeting and awaiting-IC pills); selecting a result jumps to its post.
+- **Tickets owned by me**: cards show ticket ID, title, summary and status; selecting a card opens the full incident details.
+- **Show all tickets**: cards are ordered by raised date and include the incident status and a live-bridge indicator when applicable.
+- **Administrator workspace**: Teams group and channel policy management, audit history and automation settings.
 
 ## Getting started
 
@@ -43,17 +43,17 @@ src/
   components/         Toasts, confirm dialog, icons, shared UI (status chips, empty states…)
   features/
     gate/             Workspace (role) picker
-    shell/            Teams header, app rail (notifications, theme, profile at the bottom), teams & channels pane
-    console/          Global view (filters, board, table), channel feed with inline search, incident drawer
+    shell/            Header and admin navigation; account, theme and notification controls
+    console/          User ticket choices and cards, admin incident console, incident details
     control/          Groups, channel policies (+ save bar), audit log, advanced settings, channel dialogs
 ```
 
 ## Features
 
 - Role-based workspaces (viewer / administrator) with access checks on navigation.
-- Incident console: filters with removable chips, board (masonry) and sortable table views, incident detail drawer with activity timeline, CSV export, refresh with skeleton loading.
+- Ticket workspace: sidebar-free owned/all ticket choices, newest-first ticket cards, live status and full incident details.
 - Control room: Teams group overview, per-channel policy toggles tracked as drafts with a sticky save/discard bar, audit log (exportable), advanced settings with inline validation and drag / arrow / Alt+↑↓ reordering of the automation workflow, channel management with confirmation before disabling monitoring.
-- Notifications, light/dark theme and account menu in the bottom-left of the app rail; collapsible teams pane and mobile drawer.
+- Notifications, light/dark theme and account menu in the user header / admin app rail; collapsible admin teams pane and mobile drawer.
 - Accessibility: MUI focus management for dialogs/menus/tabs, labelled controls, `aria-live` regions, skip link, reduced-motion support.
 
 ## Production notes

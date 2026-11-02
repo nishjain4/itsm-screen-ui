@@ -12,7 +12,7 @@ import { formatDate } from '../../lib/utils'
 import { useApp } from '../../state/AppState'
 import type { Filters, IncidentStatus } from '../../types'
 
-const LABELS: Record<keyof Filters, string> = { query: 'Search', from: 'From', to: 'To', creator: 'Creator', scope: 'Scope', status: 'Status' }
+const LABELS: Record<keyof Filters, string> = { query: 'Search', from: 'From', to: 'To', creator: 'Creator', scope: 'Group / channel', status: 'Status' }
 
 const activeSx = (on: boolean) => (on ? { '& .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' }, '& .MuiInputAdornment-root': { color: 'primary.main' } } : undefined)
 const adorn = (icon: ReactNode) => <InputAdornment position="start" sx={{ color: 'text.secondary', '& svg': { fontSize: 18 } }}>{icon}</InputAdornment>
@@ -77,15 +77,15 @@ export function FilterBar() {
         <TextField
           select
           size="small"
-          label="Team or channel"
+          label="Group or channel"
           value={filters.scope}
           onChange={e => setFilters({ scope: e.target.value })}
           className="w-[calc(50%-4px)] flex-none sm:w-52"
           sx={activeSx(!!filters.scope)}
-          slotProps={{ select: { displayEmpty: true, renderValue: v => (v ? scopeLabel(String(v)) : 'All teams & channels') }, inputLabel: { shrink: true }, input: { startAdornment: adorn(<TagIcon />) } }}
+          slotProps={{ select: { displayEmpty: true, renderValue: v => (v ? scopeLabel(String(v)) : 'All groups & channels') }, inputLabel: { shrink: true }, input: { startAdornment: adorn(<TagIcon />) } }}
         >
-          <MenuItem value="">All teams &amp; channels</MenuItem>
-          <ListSubheader>Teams</ListSubheader>
+          <MenuItem value="">All groups &amp; channels</MenuItem>
+          <ListSubheader>Groups</ListSubheader>
           {groups.map(g => (
             <MenuItem key={g.id} value={'team:' + g.name}>{g.name}</MenuItem>
           ))}

@@ -53,7 +53,7 @@ export function Gate() {
             Incident operations,{' '}
             <span className="bg-linear-to-r from-blue-300 to-violet-300 bg-clip-text text-transparent">governed and auditable.</span>
           </h1>
-          <p className="mt-4 max-w-md text-base text-slate-400">One workspace for incident ownership, updates, meetings and follow-ups — natively integrated with Microsoft Teams.</p>
+          <p className="mt-4 max-w-md text-base text-slate-400">One workspace for incident ownership, updates, meetings and follow-ups.</p>
           <ul className="mt-7 hidden gap-3 sm:grid">
             {POINTS.map(([Icon, strong, rest]) => (
               <li key={strong} className="flex items-center gap-3 text-sm text-slate-300">
@@ -90,7 +90,7 @@ export function Gate() {
             <RoleCard
               role="user"
               title="User workspace"
-              desc="Find threads, follow updates, check ownership and jump back into Teams."
+              desc="Find incidents, follow updates, and check ownership."
               icon={<SearchIcon />}
               accent="tint-primary"
               tags={[<Chip key="a" size="small" variant="outlined" label="Incident viewer" />, <Chip key="b" size="small" variant="outlined" label="Read access" />]}
@@ -98,7 +98,7 @@ export function Gate() {
             <RoleCard
               role="admin"
               title="Admin workspace"
-              desc="Manage Teams groups, monitoring scope, automation, paging and Zoom."
+              desc="Manage service groups, monitoring scope, automation, paging and Zoom."
               icon={<ShieldIcon />}
               accent="tint-secondary"
               tags={[<Chip key="a" size="small" variant="outlined" label="Administrator" />, <Chip key="b" size="small" variant="outlined" icon={<LockIcon />} label="Privileged" />]}

@@ -28,36 +28,53 @@ export function TeamsPane({ onNavigate }: { onNavigate: () => void }) {
     })
 
   const select = (ref: { team: string; channel: string } | null) => {
-    app.goTo('console')
-    app.openChannel(ref)
+    if (app.role === 'admin') {
+      if (ref) {
+        const group = app.groups.find(g => g.name === ref.team)
+        if (group) {
+          app.setPolicyFilter({ q: ref.channel, group: group.id })
+          app.setControlTab('policies')
+        }
+      } else {
+        app.setControlTab('groups')
+      }
+      app.goTo('control')
+    } else {
+      app.goTo('console')
+      app.openChannel(ref)
+    }
     onNavigate()
   }
 
   return (
     <nav aria-label="Teams and channels" className="flex h-full flex-col">
       <div className="flex h-14 flex-none items-center gap-2 border-b border-line px-4">
-        <h2 className="text-[19px] font-bold tracking-tight">Teams</h2>
-        <span className="ml-auto text-xs text-muted">{openTotal} open</span>
+        <h2 className="text-[19px] font-bold tracking-tight">{app.role === 'admin' ? 'Channels' : 'Teams'}</h2>
+        {app.role !== 'admin' && <span className="ml-auto text-xs text-muted">{openTotal} open</span>}
       </div>
 
       <div className="min-h-0 flex-1 overflow-auto px-2 py-2">
-        <ListItemButton
-          selected={!app.channel}
-          aria-current={!app.channel ? 'page' : undefined}
-          onClick={() => select(null)}
-          sx={{ borderRadius: 1.5, minHeight: 40, gap: 1.25, px: 1.25, mb: 1 }}
-        >
-          <span className="grid size-7 flex-none place-items-center rounded-md tint-primary">
-            <DashboardIcon sx={{ fontSize: 17 }} />
-          </span>
-          <span className="truncate text-[15px] font-semibold">All incidents</span>
-          {countBadge(openTotal, `${openTotal} open incidents`)}
-        </ListItemButton>
+        {app.role !== 'admin' && (
+          <ListItemButton
+            selected={!app.channel}
+            aria-current={!app.channel ? 'page' : undefined}
+            onClick={() => select(null)}
+            sx={{ borderRadius: 1.5, minHeight: 40, gap: 1.25, px: 1.25, mb: 1 }}
+          >
+            <span className="grid size-7 flex-none place-items-center rounded-md tint-primary">
+              <DashboardIcon sx={{ fontSize: 17 }} />
+            </span>
+            <span className="truncate text-[15px] font-semibold">All incidents</span>
+            {countBadge(openTotal, `${openTotal} open incidents`)}
+          </ListItemButton>
+        )}
 
-        <p className="px-2 pt-1 pb-1.5 text-[12px] font-semibold tracking-[.07em] text-muted uppercase">Your teams</p>
+        <p className="px-2 pt-1 pb-1.5 text-[12px] font-semibold tracking-[.07em] text-muted uppercase">{app.role === 'admin' ? 'Teams' : 'Your teams'}</p>
         <List disablePadding dense>
           {app.groups.map((g, gi) => {
-            const hasSelected = app.channel?.team === g.name
+            const hasSelected = app.role === 'admin'
+              ? app.controlTab === 'policies' && app.policyFilter.group === g.id
+              : app.channel?.team === g.name
             const expanded = hasSelected || !collapsed.has(g.id)
             const teamOpen = app.incidents.filter(i => i.team === g.name && isOpen(i)).length
             return (
@@ -78,7 +95,9 @@ export function TeamsPane({ onNavigate }: { onNavigate: () => void }) {
                 <Collapse in={expanded} id={`team-${g.id}`}>
                   <List disablePadding dense aria-label={`${g.name} channels`}>
                     {g.channels.map(c => {
-                      const selected = hasSelected && app.channel?.channel === c.name
+                      const selected = app.role === 'admin'
+                        ? hasSelected && app.policyFilter.q === c.name
+                        : hasSelected && app.channel?.channel === c.name
                       const open = openIncidentsFor(app.incidents, g.name, c.name).length
                       return (
                         <li key={c.name}>
@@ -96,11 +115,11 @@ export function TeamsPane({ onNavigate }: { onNavigate: () => void }) {
                                 '&.Mui-selected': { fontWeight: 600 },
                               }}
                             >
-                              <span className={`truncate text-[14.5px] ${open ? 'font-semibold' : ''} ${c.enabled ? '' : 'text-muted'}`}>
+                              <span className={`truncate text-[14.5px] ${open && app.role !== 'admin' ? 'font-semibold' : ''} ${c.enabled ? '' : 'text-muted'}`}>
                                 <span className="text-muted">#</span> {c.name}
                               </span>
                               {!c.enabled && <span aria-label="Not monitored" className="size-1.5 flex-none rounded-full bg-line" />}
-                              {countBadge(open, `${open} open incidents`)}
+                              {app.role !== 'admin' && countBadge(open, `${open} open incidents`)}
                             </ListItemButton>
                           </Tooltip>
                         </li>

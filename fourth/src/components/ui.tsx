@@ -6,7 +6,7 @@ import type { Incident, IncidentStatus } from '../types'
 import { ActivityIcon, AlertIcon, ClockIcon, VideoIcon } from './icons'
 import { useToast } from './Toast'
 
-export function StatusChip({ status }: { status: IncidentStatus }) {
+export function StatusChip({ status, compact = false }: { status: IncidentStatus; compact?: boolean }) {
   const tone = statusTone(status)
   return (
     <Chip
@@ -14,8 +14,9 @@ export function StatusChip({ status }: { status: IncidentStatus }) {
       variant="outlined"
       color={tone}
       label={status}
-      icon={<span className={`ml-2! size-1.5 rounded-full bg-current ${status === 'Active' ? 'animate-pulse-soft' : ''}`} />}
+      icon={<span className={`${compact ? 'ml-1!' : 'ml-2!'} size-1.5 rounded-full bg-current ${status === 'Active' ? 'animate-pulse-soft' : ''}`} />}
       className={toneClass[tone]}
+      sx={compact ? { height: 19, fontSize: 10.5, '& .MuiChip-label': { px: 0.75 } } : undefined}
     />
   )
 }

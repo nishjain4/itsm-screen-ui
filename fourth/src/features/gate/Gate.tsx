@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import { useColorScheme } from '@mui/material/styles'
 import type { ReactNode } from 'react'
-import { BoltIcon, ChevronRightIcon, DarkIcon, LightIcon, LockIcon, SearchIcon, ShieldIcon, TuneIcon } from '../../components/icons'
+import { BoltIcon, ChevronRightIcon, DarkIcon, DashboardIcon, LightIcon, LockIcon, SearchIcon, ShieldIcon, TuneIcon } from '../../components/icons'
 import { BrandMark } from '../../components/ui'
 import { useApp } from '../../state/AppState'
 import type { Role } from '../../types'
@@ -102,8 +102,16 @@ export function Gate() {
               accent="tint-secondary"
               tags={[<Chip key="a" size="small" variant="outlined" label="Administrator" />, <Chip key="b" size="small" variant="outlined" icon={<LockIcon />} label="Privileged" />]}
             />
+            <RoleCard
+              role="status"
+              title="Status Page"
+              desc="Browse every ticket as a visual board and check its live status at a glance."
+              icon={<DashboardIcon />}
+              accent="tint-resolved"
+              tags={[<Chip key="a" size="small" variant="outlined" label="Status board" />, <Chip key="b" size="small" variant="outlined" label="Read access only" />]}
+            />
           </div>
-          
+
         </div>
       </div>
     </section>

@@ -1,15 +1,12 @@
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import Chip from '@mui/material/Chip'
-import InputAdornment from '@mui/material/InputAdornment'
-import MenuItem from '@mui/material/MenuItem'
 import Paper from '@mui/material/Paper'
 import Slide from '@mui/material/Slide'
 import Switch from '@mui/material/Switch'
-import TextField from '@mui/material/TextField'
 import { useEffect, useRef } from 'react'
 import { useConfirm } from '../../components/Confirm'
-import { AlertIcon, CheckCircleIcon, CheckIcon, FilterIcon, GroupsIcon, SearchIcon, TuneIcon } from '../../components/icons'
+import { AlertIcon, CheckCircleIcon, CheckIcon, FilterIcon, TuneIcon } from '../../components/icons'
 import { useToast } from '../../components/Toast'
 import { EmptyState, SectionTitle } from '../../components/ui'
 import { CORE_FEATURES, DEFAULT_ORDER } from '../../data/mock'
@@ -142,23 +139,18 @@ function SaveBar() {
   }
 
   return (
-    <Slide in={n > 0} direction="up" mountOnEnter unmountOnExit>
-      <Paper
-        role="region"
-        aria-label="Unsaved changes"
-        elevation={12}
-        className="fixed right-3 bottom-5 left-3 z-[1100] flex flex-wrap items-center gap-3 rounded-xl! border border-line py-2 pr-2 pl-4 text-[13px] font-medium sm:right-auto sm:left-1/2 sm:-translate-x-1/2"
-      >
+    n > 0 && (
+      <div role="region" aria-label="Unsaved changes" className="flex flex-wrap items-center gap-2 text-[13px] font-medium">
         <span className="size-2 rounded-full bg-st-monitoring shadow-[0_0_0_3px_color-mix(in_srgb,var(--color-st-monitoring)_20%,transparent)]" />
-        <span>{plural(n, 'channel')} with unsaved policy changes</span>
+        <span className="mr-1">{plural(n, 'channel')} unsaved</span>
         <Button size="small" color="inherit" onClick={discard}>
           Discard
         </Button>
         <Button size="small" variant="contained" startIcon={<CheckIcon />} onClick={save}>
-          Save all policies
+          Save all
         </Button>
-      </Paper>
-    </Slide>
+      </div>
+    )
   )
 }
 
@@ -177,37 +169,7 @@ export function PoliciesTab({ onAdvanced, onShowOpen }: { onAdvanced: (groupId: 
       <SectionTitle
         title="Channel behavior policies"
         description="Set automation rules individually for each Teams channel."
-        actions={
-          <>
-            <TextField
-              size="small"
-              type="search"
-              placeholder="Filter channels…"
-              value={q}
-              onChange={e => app.setPolicyFilter({ q: e.target.value, group })}
-              slotProps={{
-                input: { startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 18 }} /></InputAdornment> },
-                htmlInput: { 'aria-label': 'Filter channel policies', autoComplete: 'off' },
-              }}
-            />
-            <TextField
-              select
-              size="small"
-              value={group}
-              onChange={e => app.setPolicyFilter({ q, group: e.target.value })}
-              sx={{ minWidth: 200 }}
-              slotProps={{
-                select: { displayEmpty: true, inputProps: { 'aria-label': 'Filter by Teams group' } },
-                input: { startAdornment: <InputAdornment position="start"><GroupsIcon sx={{ fontSize: 18 }} /></InputAdornment> },
-              }}
-            >
-              <MenuItem value="">All groups</MenuItem>
-              {app.groups.map(g => (
-                <MenuItem key={g.id} value={g.id}>{g.name}</MenuItem>
-              ))}
-            </TextField>
-          </>
-        }
+        actions={<SaveBar />}
       />
       {items.length ? (
         <div className="grid gap-3.5 md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
@@ -226,9 +188,6 @@ export function PoliciesTab({ onAdvanced, onShowOpen }: { onAdvanced: (groupId: 
         <EmptyState icon={<FilterIcon />} title="No channels match">Adjust the filter to see more channels.</EmptyState>
       )}
       
-      {/* Keeps the last cards scrollable above the fixed save bar. */}
-      {Object.keys(app.policyDraft).length > 0 && <div aria-hidden className="h-20" />}
-      <SaveBar />
     </>
   )
 }

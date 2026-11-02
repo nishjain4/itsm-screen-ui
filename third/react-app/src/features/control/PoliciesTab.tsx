@@ -176,7 +176,7 @@ export function PoliciesTab({ onAdvanced, onShowOpen }: { onAdvanced: (groupId: 
     <>
       <SectionTitle
         title="Channel behavior policies"
-        description="Set automation rules individually for each Teams channel."
+        description="Set automation rules individually for each service channel."
         actions={
           <>
             <TextField
@@ -197,7 +197,7 @@ export function PoliciesTab({ onAdvanced, onShowOpen }: { onAdvanced: (groupId: 
               onChange={e => app.setPolicyFilter({ q, group: e.target.value })}
               sx={{ minWidth: 200 }}
               slotProps={{
-                select: { displayEmpty: true, inputProps: { 'aria-label': 'Filter by Teams group' } },
+                select: { displayEmpty: true, inputProps: { 'aria-label': 'Filter by service group' } },
                 input: { startAdornment: <InputAdornment position="start"><GroupsIcon sx={{ fontSize: 18 }} /></InputAdornment> },
               }}
             >

@@ -21,7 +21,7 @@ function timeline(i: Incident): Step[] {
   if (i.zoom === 'live') steps.push([VideoIcon, 'Zoom bridge is live', 'Join using the meeting link above'])
   else if (i.zoom === 'scheduled') steps.push([ClockIcon, 'Zoom bridge scheduled', 'Invite sent to responders'])
   else if (i.zoom === 'ended') steps.push([VideoIcon, 'Zoom bridge ended', 'Recording attached to thread'])
-  if (i.status === 'Resolved') steps.push([CheckCircleIcon, 'Incident resolved', 'Follow-ups tracked in Teams'])
+  if (i.status === 'Resolved') steps.push([CheckCircleIcon, 'Incident resolved', 'Follow-up actions tracked'])
   else if (i.status === 'Monitoring') steps.push([EyeIcon, 'Mitigation applied, monitoring recovery', 'In progress'])
   return steps
 }
@@ -54,7 +54,7 @@ export function IncidentSheet() {
           <header className="flex items-start gap-3 border-b border-line px-5 pt-4.5 pb-3.5">
             <div className="min-w-0 flex-1">
               <h2 id="sheet-title" className="text-[17px] font-semibold tracking-tight">{i.id}</h2>
-              <p id="sheet-desc" className="mt-0.5 text-[13px] text-muted">#{i.channel} · {i.team}</p>
+              <p id="sheet-desc" className="mt-0.5 text-[13px] text-muted">#{i.channel}</p>
             </div>
             <IconButton aria-label="Close details" onClick={close} size="small" autoFocus>
               <CloseIcon fontSize="small" />
@@ -75,8 +75,6 @@ export function IncidentSheet() {
               <dd><Person name={i.ic} /></dd>
               <dt className="text-muted">Reported by</dt>
               <dd><Person name={i.creator} /></dd>
-              <dt className="text-muted">Teams group</dt>
-              <dd className="font-medium">{i.team}</dd>
               <dt className="text-muted">Channel</dt>
               <dd>
                 {app.role === 'admin' ? (
@@ -110,8 +108,8 @@ export function IncidentSheet() {
             <Button variant="outlined" color="inherit" startIcon={<CopyIcon />} onClick={() => copy(i.id)}>
               Copy ID
             </Button>
-            <Button variant="contained" startIcon={<ChatIcon />} href={i.link} onClick={demo(`Teams thread for ${i.id}`)}>
-              Open Teams thread
+            <Button variant="contained" startIcon={<ChatIcon />} href={i.link} onClick={demo(`source discussion for ${i.id}`)}>
+              Open source discussion
             </Button>
           </footer>
         </div>

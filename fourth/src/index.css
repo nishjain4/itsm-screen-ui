@@ -24,7 +24,7 @@
 
 @layer base {
   /* Base size for the Teams layout: scales rem-based Tailwind and MUI sizes. */
-  html { -webkit-text-size-adjust: 100%; font-size: 17px; }
+  html { -webkit-text-size-adjust: 100%; font-size: 16px; }
   code, kbd, samp, pre { font-family: inherit; }
   kbd {
     font: 500 11px var(--font-sans);
@@ -56,8 +56,8 @@
   .dark .pane-bg { background-color: #141414; }
   /* Teams-style filter pills. */
   .pill {
-    display: inline-flex; align-items: center; gap: .375rem; height: 2rem; padding: 0 .875rem;
-    border-radius: 9999px; font-size: 14px; font-weight: 500; white-space: nowrap; color: var(--color-fg);
+    display: inline-flex; align-items: center; gap: .375rem; height: 1.875rem; padding: 0 .75rem;
+    border-radius: 9999px; font-size: 13px; font-weight: 500; white-space: nowrap; color: var(--color-fg);
     background-color: color-mix(in srgb, var(--color-primary) 13%, var(--color-paper));
     transition: background-color .15s, color .15s;
   }

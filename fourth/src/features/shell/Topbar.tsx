@@ -3,10 +3,11 @@ import IconButton from '@mui/material/IconButton'
 import Toolbar from '@mui/material/Toolbar'
 import Tooltip from '@mui/material/Tooltip'
 import { useEffect, useState } from 'react'
-import { BackIcon, SidebarIcon } from '../../components/icons'
+import { BackIcon } from '../../components/icons'
 import { BrandMark } from '../../components/ui'
 import { formatDateTime, relTime } from '../../lib/utils'
 import { useApp } from '../../state/AppState'
+import { Notifications, ThemeMenu, UserMenu } from './AccountControls'
 
 function useTick(ms: number) {
   const [, setT] = useState(0)
@@ -16,7 +17,7 @@ function useTick(ms: number) {
   }, [ms])
 }
 
-export function Topbar({ onToggleNav, navExpanded, showNavToggle, onLeave }: { onToggleNav: () => void; navExpanded: boolean; showNavToggle: boolean; onLeave: (signOut: boolean) => void }) {
+export function Topbar({ onLeave }: { onLeave: (signOut: boolean) => void }) {
   const app = useApp()
   useTick(30_000)
   return (
@@ -27,13 +28,6 @@ export function Topbar({ onToggleNav, navExpanded, showNavToggle, onLeave }: { o
             <BackIcon fontSize="small" />
           </IconButton>
         </Tooltip>
-        {showNavToggle && (
-          <Tooltip title="Show or hide teams">
-            <IconButton aria-label="Toggle teams pane" aria-controls="teams-pane" aria-expanded={navExpanded} onClick={onToggleNav}>
-              <SidebarIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        )}
         <span className="flex min-w-0 items-center gap-2">
           <BrandMark size={26} />
           <span className="truncate text-[15px] font-semibold max-sm:hidden">OpsPilot</span>
@@ -47,6 +41,13 @@ export function Topbar({ onToggleNav, navExpanded, showNavToggle, onLeave }: { o
               Synced {relTime(app.lastSync)}
             </span>
           </Tooltip>
+          {app.role !== 'admin' && (
+            <>
+              <Notifications inTopbar />
+              <ThemeMenu inTopbar />
+              <UserMenu onLeave={onLeave} inTopbar />
+            </>
+          )}
         </div>
       </Toolbar>
     </AppBar>

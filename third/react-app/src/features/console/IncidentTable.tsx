@@ -19,8 +19,6 @@ const COLS: [SortKey, string][] = [
   ['id', 'ID'],
   ['title', 'Incident'],
   ['status', 'Status'],
-  ['team', 'Team'],
-  ['ic', 'Commander'],
   ['creator', 'Reported by'],
   ['date', 'Date'],
 ]
@@ -65,13 +63,11 @@ export function IncidentTable({ data }: { data: Incident[] }) {
                   <span className="block text-xs text-muted"># {i.channel}</span>
                 </TableCell>
                 <TableCell><StatusChip status={i.status} /></TableCell>
-                <TableCell>{i.team}</TableCell>
-                <TableCell><Person name={i.ic} /></TableCell>
                 <TableCell><Person name={i.creator} /></TableCell>
                 <TableCell className="text-xs!">{formatDate(i.date)}</TableCell>
                 <TableCell align="right">
-                  <Tooltip title="Open Teams thread">
-                    <IconButton size="small" component="a" href={i.link} onClick={demo(`Teams thread for ${i.id}`)} aria-label={`Open ${i.id} Teams thread`}>
+                  <Tooltip title="Open source discussion">
+                    <IconButton size="small" component="a" href={i.link} onClick={demo(`source discussion for ${i.id}`)} aria-label={`Open ${i.id} source discussion`}>
                       <ExternalIcon sx={{ fontSize: 16 }} />
                     </IconButton>
                   </Tooltip>

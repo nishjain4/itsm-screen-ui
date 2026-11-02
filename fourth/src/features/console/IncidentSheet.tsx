@@ -104,9 +104,6 @@ export function IncidentSheet({ fullPage = false }: { fullPage?: boolean }) {
         </ol>
       </div>
       <footer className="flex justify-end gap-2 border-t border-line px-5 py-3 subtle-bg">
-        <Button variant="outlined" color="inherit" startIcon={<CopyIcon />} onClick={() => copy(i.id)}>
-          Copy ID
-        </Button>
         <Button variant="contained" startIcon={<ChatIcon />} href={i.link} onClick={demo(`Teams thread for ${i.id}`)}>
           Open Teams thread
         </Button>

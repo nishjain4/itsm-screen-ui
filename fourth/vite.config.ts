@@ -5,11 +5,8 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
   server: {
-    host:'127.0.0.1',
-    port: 5173,
-    hmr: {
-      protocol: "wss",
-    },
+    host: '0.0.0.0',
+    port: 5175
   },
   base: './',
   plugins: [react(), tailwindcss()],

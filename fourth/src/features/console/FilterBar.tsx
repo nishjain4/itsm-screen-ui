@@ -41,12 +41,12 @@ export function FilterBar() {
             onFocus={() => setOpen(true)}
             onClick={() => setOpen(true)}
             sx={{
-              '& .MuiOutlinedInput-root': { borderRadius: open ? '10px 10px 0 0' : '10px', height: 46 },
+              '& .MuiOutlinedInput-root': { borderRadius: open ? '10px 10px 0 0' : '10px', height: 40 },
               '& .MuiOutlinedInput-notchedOutline': open ? { borderColor: 'primary.main', borderBottomColor: 'divider' } : {},
             }}
             slotProps={{
               input: {
-                startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 20 }} /></InputAdornment>,
+                startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 18 }} /></InputAdornment>,
                 endAdornment: panelCount > 0 && (
                   <InputAdornment position="end">
                     <Chip size="small" icon={<FilterIcon />} label={`${panelCount} filter${panelCount > 1 ? 's' : ''}`} className="tint-primary" />

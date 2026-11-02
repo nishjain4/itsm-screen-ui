@@ -53,8 +53,8 @@ export const theme = createTheme({
     MuiButton: {
       defaultProps: { disableElevation: true },
       styleOverrides: {
-        root: { borderRadius: 8 },
-        sizeSmall: { padding: '3px 10px' },
+        root: { borderRadius: 8, fontSize: '0.8125rem' },
+        sizeSmall: { padding: '2px 8px' },
         // Neutral outlined buttons: hairline border instead of currentColor.
         outlined: ({ ownerState }) =>
           ownerState.color === 'inherit'
@@ -68,16 +68,16 @@ export const theme = createTheme({
     MuiChip: {
       styleOverrides: {
         root: { fontWeight: 500 },
-        sizeSmall: { height: 24, fontSize: 12.5 },
+        sizeSmall: { height: 22, fontSize: 11.5 },
         outlined: ({ ownerState }) => (ownerState.color === 'default' || !ownerState.color ? { borderColor: 'var(--mui-palette-divider)' } : {}),
       },
     },
-    MuiInputBase: { styleOverrides: { root: { fontSize: 15 } } },
-    MuiInputLabel: { styleOverrides: { root: { fontSize: 15 } } },
+    MuiInputBase: { styleOverrides: { root: { fontSize: 14 } } },
+    MuiInputLabel: { styleOverrides: { root: { fontSize: 14 } } },
     MuiTooltip: { defaultProps: { arrow: true } },
-    MuiTab: { styleOverrides: { root: { textTransform: 'none', fontWeight: 500, minHeight: 44 } } },
+    MuiTab: { styleOverrides: { root: { textTransform: 'none', fontWeight: 500, minHeight: 40 } } },
     MuiTableCell: { styleOverrides: { head: { fontWeight: 600, whiteSpace: 'nowrap' } } },
-    MuiDialogTitle: { styleOverrides: { root: { fontWeight: 600, fontSize: 17 } } },
+    MuiDialogTitle: { styleOverrides: { root: { fontWeight: 600, fontSize: 16 } } },
     MuiMenu: { defaultProps: { slotProps: { paper: { elevation: 8 } } } },
     MuiOutlinedInput: { styleOverrides: { root: { backgroundColor: 'var(--mui-palette-background-paper)' } } },
     MuiCssBaseline: {

@@ -54,7 +54,7 @@ export function ChannelManagerDialog({ groupId, onClose }: { groupId: string; on
                 <b>#{c.name}</b>
               </Fragment>
             ))}
-            . Automations will pause and unsaved policy edits for {disabling.length === 1 ? 'this channel' : 'these channels'} are dropped. The Teams{' '}
+            . Automations will pause and unsaved policy edits for {disabling.length === 1 ? 'this channel' : 'these channels'} are dropped. The underlying{' '}
             {disabling.length === 1 ? 'channel is' : 'channels are'} not deleted.
           </>
         ),
@@ -71,7 +71,7 @@ export function ChannelManagerDialog({ groupId, onClose }: { groupId: string; on
 
   return (
     <Dialog open onClose={onClose} fullWidth maxWidth="sm" aria-labelledby="mgr-title">
-      {titleWithDesc('mgr-title', 'Manage channels', `${g.name} · Toggling monitoring never creates or deletes the underlying Teams channel.`)}
+      {titleWithDesc('mgr-title', 'Manage channels', `${g.name} · Toggling monitoring never creates or deletes the underlying channel.`)}
       <DialogContent dividers>
         {g.channels.map(c => (
           <div key={c.name} className="flex items-center justify-between gap-3 border-b border-line py-2.5">
@@ -150,12 +150,12 @@ export function AddChannelDialog({ open, onClose }: { open: boolean; onClose: ()
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs" aria-labelledby="add-title">
-      {titleWithDesc('add-title', 'Add channel to bot service', 'Choose a channel that already exists in a bot-enabled Team. The backend verifies access before updating the monitoring scope.')}
+      {titleWithDesc('add-title', 'Add channel to bot service', 'Choose an existing channel from a connected service group. The backend verifies access before updating the monitoring scope.')}
       <DialogContent dividers className="grid gap-4">
         <TextField
           select
           size="small"
-          label="Teams group"
+          label="Service group"
           value={groupId}
           onChange={e => {
             setGroupId(e.target.value)
@@ -225,7 +225,7 @@ export function OpenIncidentsDialog({ groupId, channel, onClose }: { groupId: st
                 <Button size="small" variant="outlined" color="inherit" startIcon={<EyeIcon />} onClick={() => { onClose(); app.setOpenIncidentId(i.id) }}>
                   View details
                 </Button>
-                <Button size="small" color="inherit" startIcon={<ExternalIcon />} href={i.link} onClick={demo(`Teams thread for ${i.id}`)}>
+                <Button size="small" color="inherit" startIcon={<ExternalIcon />} href={i.link} onClick={demo(`source discussion for ${i.id}`)}>
                   Open source thread
                 </Button>
               </div>

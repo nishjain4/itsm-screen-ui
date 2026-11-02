@@ -27,7 +27,7 @@ function RailItem({ label, icon, selected, badge, onClick, hint }: { label: stri
 }
 
 /** Teams-style vertical app bar. */
-export function AppRail({ onLeave }: { onLeave: (signOut: boolean) => void }) {
+export function AppRail({ onLeave, onToggleNav }: { onLeave: (signOut: boolean) => void; onToggleNav: () => void }) {
   const app = useApp()
   const dirty = useDirtyCount()
   const admin = app.role === 'admin'
@@ -41,7 +41,7 @@ export function AppRail({ onLeave }: { onLeave: (signOut: boolean) => void }) {
           hint="Control room"
           icon={<TuneIcon />}
           selected={app.page === 'control'}
-          onClick={() => app.goTo('control')}
+          onClick={() => { app.goTo('control'); onToggleNav() }}
           badge={dirty > 0 && <span title="Unsaved policy changes" className="absolute -top-0.5 -right-1 size-2.5 rounded-full border-2 border-paper bg-st-monitoring" />}
         />
       ) : (
@@ -50,7 +50,7 @@ export function AppRail({ onLeave }: { onLeave: (signOut: boolean) => void }) {
           hint="Incidents by team"
           icon={<GroupsIcon />}
           selected={app.page === 'console'}
-          onClick={() => app.goTo('console')}
+          onClick={() => { app.goTo('console'); onToggleNav() }}
           badge={
             open > 0 && (
               <span aria-label={`${open} open incidents`} className="absolute -top-1.5 -right-2.5 grid h-4 min-w-4 place-items-center rounded-full bg-st-active px-1 text-[10px] font-semibold text-white">

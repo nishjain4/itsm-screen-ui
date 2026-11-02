@@ -19,12 +19,12 @@ import { BellIcon, CheckIcon, DarkIcon, EyeIcon, LightIcon, LogoutIcon, ShieldIc
 import { formatDate, initials, statusTone, toneClass } from '../../lib/utils'
 import { useApp } from '../../state/AppState'
 
-// Menus open to the right of the bottom-left rail.
+// Controls can anchor to the app rail or the user workspace header.
 const ANCHOR = { vertical: 'bottom', horizontal: 'right' } as const
 const TRANSFORM = { vertical: 'bottom', horizontal: 'left' } as const
 const railBtn = { width: 44, height: 44, borderRadius: 2 }
 
-export function Notifications() {
+export function Notifications({ inTopbar = false }: { inTopbar?: boolean } = {}) {
   const app = useApp()
   const [anchor, setAnchor] = useState<HTMLElement | null>(null)
   const items = app.incidents
@@ -37,7 +37,7 @@ export function Notifications() {
   const unread = items.filter(n => !app.notifRead.has(n.i.id)).length
   return (
     <>
-      <Tooltip title="Notifications" placement="right">
+      <Tooltip title="Notifications" placement={inTopbar ? 'bottom' : 'right'}>
         <IconButton sx={railBtn} aria-label={unread ? `Notifications, ${unread} unread` : 'Notifications'} aria-haspopup="true" aria-expanded={!!anchor} onClick={e => setAnchor(e.currentTarget)}>
           <Badge color="error" badgeContent={unread} max={9}>
             <BellIcon />
@@ -48,9 +48,9 @@ export function Notifications() {
         open={!!anchor}
         anchorEl={anchor}
         onClose={() => setAnchor(null)}
-        anchorOrigin={ANCHOR}
-        transformOrigin={TRANSFORM}
-        slotProps={{ paper: { sx: { width: 380, ml: 1 }, role: 'region', 'aria-label': 'Notifications' } }}
+        anchorOrigin={inTopbar ? { vertical: 'bottom', horizontal: 'right' } : ANCHOR}
+        transformOrigin={inTopbar ? { vertical: 'top', horizontal: 'right' } : TRANSFORM}
+        slotProps={{ paper: { sx: { width: 380, ml: inTopbar ? 0 : 1 }, role: 'region', 'aria-label': 'Notifications' } }}
       >
         <div className="flex items-center justify-between border-b border-line px-3.5 py-2.5">
           <strong className="text-sm">Notifications</strong>
@@ -91,7 +91,7 @@ export function Notifications() {
   )
 }
 
-export function ThemeMenu() {
+export function ThemeMenu({ inTopbar = false }: { inTopbar?: boolean } = {}) {
   const { mode, setMode } = useColorScheme()
   const [anchor, setAnchor] = useState<HTMLElement | null>(null)
   const opts: ['light' | 'dark', string, SvgIconComponent][] = [
@@ -100,12 +100,19 @@ export function ThemeMenu() {
   ]
   return (
     <>
-      <Tooltip title="Theme" placement="right">
+      <Tooltip title="Theme" placement={inTopbar ? 'bottom' : 'right'}>
         <IconButton sx={railBtn} aria-label="Change theme" aria-haspopup="menu" aria-expanded={!!anchor} onClick={e => setAnchor(e.currentTarget)}>
           {mode === 'dark' ? <DarkIcon /> : <LightIcon />}
         </IconButton>
       </Tooltip>
-      <Menu anchorEl={anchor} open={!!anchor} onClose={() => setAnchor(null)} anchorOrigin={ANCHOR} transformOrigin={TRANSFORM} slotProps={{ paper: { sx: { ml: 1 } } }}>
+      <Menu
+        anchorEl={anchor}
+        open={!!anchor}
+        onClose={() => setAnchor(null)}
+        anchorOrigin={inTopbar ? { vertical: 'bottom', horizontal: 'right' } : ANCHOR}
+        transformOrigin={inTopbar ? { vertical: 'top', horizontal: 'right' } : TRANSFORM}
+        slotProps={{ paper: { sx: { ml: inTopbar ? 0 : 1 } } }}
+      >
         {opts.map(([value, text, Icon]) => (
           <MenuItem
             key={value}
@@ -128,7 +135,7 @@ export function ThemeMenu() {
   )
 }
 
-export function UserMenu({ onLeave }: { onLeave: (signOut: boolean) => void }) {
+export function UserMenu({ onLeave, inTopbar = false }: { onLeave: (signOut: boolean) => void; inTopbar?: boolean }) {
   const app = useApp()
   const [anchor, setAnchor] = useState<HTMLElement | null>(null)
   const p = app.profile
@@ -136,7 +143,7 @@ export function UserMenu({ onLeave }: { onLeave: (signOut: boolean) => void }) {
   const close = () => setAnchor(null)
   return (
     <>
-      <Tooltip title={`${p.name} · ${p.role}`} placement="right">
+      <Tooltip title={`${p.name} · ${p.role}`} placement={inTopbar ? 'bottom' : 'right'}>
         <ButtonBase aria-haspopup="menu" aria-expanded={!!anchor} aria-label={`Account: ${p.name}`} onClick={e => setAnchor(e.currentTarget)} sx={{ borderRadius: 99 }}>
           <Avatar sx={{ width: 36, height: 36, fontSize: 13, fontWeight: 600 }} className={app.role === 'admin' ? 'bg-linear-to-br! from-violet-600 to-pink-600' : 'bg-linear-to-br! from-indigo-500 to-violet-500'}>
             {p.initials || initials(p.name)}
@@ -144,7 +151,14 @@ export function UserMenu({ onLeave }: { onLeave: (signOut: boolean) => void }) {
           <span aria-hidden className="absolute right-0 bottom-0 size-2.5 rounded-full border-2 border-paper bg-st-resolved" />
         </ButtonBase>
       </Tooltip>
-      <Menu anchorEl={anchor} open={!!anchor} onClose={close} anchorOrigin={ANCHOR} transformOrigin={TRANSFORM} slotProps={{ paper: { sx: { minWidth: 260, ml: 1 } } }}>
+      <Menu
+        anchorEl={anchor}
+        open={!!anchor}
+        onClose={close}
+        anchorOrigin={inTopbar ? { vertical: 'bottom', horizontal: 'right' } : ANCHOR}
+        transformOrigin={inTopbar ? { vertical: 'top', horizontal: 'right' } : TRANSFORM}
+        slotProps={{ paper: { sx: { minWidth: 260, ml: inTopbar ? 0 : 1 } } }}
+      >
         <div className="px-4 py-2 leading-snug">
           <strong className="block text-[14px]">{p.name}</strong>
           <small className="block text-[13px] text-muted">{p.role}</small>

@@ -2,10 +2,12 @@ import Alert from '@mui/material/Alert'
 import Badge from '@mui/material/Badge'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
+import InputAdornment from '@mui/material/InputAdornment'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
+import TextField from '@mui/material/TextField'
 import { useState, type ReactNode } from 'react'
-import { AddIcon, GroupsIcon, HistoryIcon, TuneIcon } from '../../components/icons'
+import { AddIcon, GroupsIcon, HistoryIcon, SearchIcon, TuneIcon } from '../../components/icons'
 import { useApp, useDirtyCount } from '../../state/AppState'
 import type { ControlTab } from '../../types'
 import { AdvancedSettingsDialog, type AdvancedTarget } from './AdvancedSettingsDialog'
@@ -58,6 +60,20 @@ export function ControlRoom({ onAddChannel }: { onAddChannel: () => void }) {
             label={tabLabel('Audit log', <Badge badgeContent={app.audit.length} color="default" max={999} sx={{ '& .MuiBadge-badge': { position: 'static', transform: 'none', bgcolor: 'action.hover', fontVariantNumeric: 'tabular-nums' } }} />)}
           />
         </Tabs>
+        {app.controlTab === 'policies' && (
+          <TextField
+            size="small"
+            type="search"
+            placeholder="Search channels..."
+            value={app.policyFilter.q}
+            onChange={e => app.setPolicyFilter({ q: e.target.value, group: app.policyFilter.group })}
+            sx={{ mb: 1, width: { xs: '100%', sm: 220 } }}
+            slotProps={{
+              input: { startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 18 }} /></InputAdornment> },
+              htmlInput: { 'aria-label': 'Search channel policies', autoComplete: 'off' },
+            }}
+          />
+        )}
         <Button variant="contained" startIcon={<AddIcon />} onClick={onAddChannel} sx={{ mb: 1 }}>
           Add channel
         </Button>
